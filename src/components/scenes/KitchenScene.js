@@ -1,7 +1,6 @@
 import { Scene, Color } from 'three';
 import { BasicLights } from 'lights';
 import { Floor } from 'objects';
-import * as THREE from 'three';
 
 class KitchenScene extends Scene {
     constructor() {
@@ -18,6 +17,7 @@ class KitchenScene extends Scene {
 
         // Add meshes to scene
         const floor = new Floor;
+        floor.rotation.set(0,Math.PI/2,0);
         const lights = new BasicLights();
         this.add(floor, lights);
     }

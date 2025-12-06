@@ -1,4 +1,6 @@
-import { Group } from 'three';
+import { Group, PlaneGeometry, Mesh, MeshStandardMaterial, DoubleSide } from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import MODEL from './floor.glb';
 
 class Floor extends Group {
     constructor() {
@@ -6,24 +8,11 @@ class Floor extends Group {
         super();
         this.name = 'Floor';
         
-        const floorGeometry = new PlaneGeometry(1, 1);
+        const loader = new GLTFLoader();
 
-
-        const floorMaterial = new MeshStandardMaterial({
-            color: 0x00ff00,  // green
-            roughness: 0.5,
-            metalness: 0.1,
-            side: DoubleSide, // visible from both sides
+        loader.load(MODEL, (gltf) => {
+            this.add(gltf.scene);
         });
-
-        // create mesh s
-        const floorMesh = new Mesh(floorGeometry, floorMaterial);
-
-        // rotate to lie flat 
-        floorMesh.rotation.x = -Math.PI / 2;
-
-        // 5. Add mesh to this Group
-        this.add(floorMesh);
         
     }
 }
