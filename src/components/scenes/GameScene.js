@@ -1,16 +1,24 @@
 import { Scene, Color } from "three";
-import { ToonCat } from "objects";
+import { ToonCat, Table, Cabinet, Trash, Stove } from "objects";
 import { BasicLights } from "lights";
+import { numRows, numCols } from "../constants";
 
 class GameScene extends Scene {
   constructor() {
     // Call parent Scene() constructor
     super();
 
+    this.rows = numRows;
+    this.cols = numCols;
+
     // Init state
     this.state = {
-      itemGrid: [], // pickup items (ingredients / pots & plates)
-      objectGrid: [], // stove, trash, ingredient bins, table
+      itemGrid: Array.from({ length: this.rows }).map(() =>
+        Array(this.cols).fill(null)
+      ), // pickup items (ingredients / pots & plates)
+      furnitureGrid: Array.from({ length: this.rows }).map(() =>
+        Array(this.cols).fill(null)
+      ), // stove, trash, ingredient bins, table
       updateList: [],
     };
 
@@ -18,14 +26,59 @@ class GameScene extends Scene {
     this.background = new Color(0x7ec0ee);
 
     // Add meshes to scene
-    this.player = new ToonCat(this);
-
+    this.player = new ToonCat(this, 1, 1);
     const lights = new BasicLights();
     this.add(this.player, lights);
+
+    const initialFurniture = [
+      ["t", "t", "c", " ", " ", "t", "t", "t"],
+      ["t", " ", " ", " ", " ", " ", " ", "t"],
+      ["x", " ", " ", " ", " ", " ", " ", "t"],
+      ["t", " ", " ", "s", "s", " ", " ", "t"],
+      ["t", " ", " ", " ", " ", " ", " ", "t"],
+      ["t", "t", " ", " ", " ", " ", "t", "t"],
+    ];
+
+    this.populateFurnitureGrid(initialFurniture);
 
     // gemini told me to put this here
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+  }
+
+  populateFurnitureGrid(furnitureLayout) {
+    for (let row = 0; row < furnitureLayout.length; row++) {
+      for (let col = 0; col < furnitureLayout[row].length; col++) {
+        const item = furnitureLayout[row][col];
+        let furnitureObject = null;
+
+        switch (item) {
+          case "t":
+            furnitureObject = new Table(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "c":
+            furnitureObject = new Cabinet(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "x":
+            furnitureObject = new Trash(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "s":
+            furnitureObject = new Stove(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          // Add more cases for different furniture types as needed
+          default:
+            break;
+        }
+      }
+    }
   }
 
   addToUpdateList(object) {

@@ -5,15 +5,15 @@ import MODEL from "./toon_cat_free.glb";
 import * as THREE from "three";
 
 class ToonCat extends Group {
-  constructor(parent) {
+  constructor(parent, row = 0, col = 0) {
     super();
 
     this.parent = parent;
 
     // Init state
     this.state = {
-      row: 0,
-      col: 0,
+      row: row,
+      col: col,
       facing: 0,
       heldObject: null,
       isAnimating: false,
@@ -97,27 +97,39 @@ class ToonCat extends Group {
       this.mixer.update(delta);
     }
 
-    this.position.x = this.state.row * 1;
-    this.position.z = this.state.col * 1;
+    this.position.z = this.state.row * 1;
+    this.position.x = this.state.col * 1;
     this.rotation.y = (this.state.facing * Math.PI) / 2;
   }
 
   move(direction) {
     if (direction === "forward") {
-      this.state.row += 1;
-      this.state.facing = 1;
+      this.state.facing = 2;
+      if (this.parent.state.furnitureGrid[this.state.row - 1][this.state.col]) {
+        return;
+      }
+      this.state.row -= 1;
     }
     if (direction === "backward") {
-      this.state.row -= 1;
-      this.state.facing = 3;
+      this.state.facing = 0;
+      if (this.parent.state.furnitureGrid[this.state.row + 1][this.state.col]) {
+        return;
+      }
+      this.state.row += 1;
     }
     if (direction === "left") {
+      this.state.facing = 3;
+      if (this.parent.state.furnitureGrid[this.state.row][this.state.col - 1]) {
+        return;
+      }
       this.state.col -= 1;
-      this.state.facing = 2;
     }
     if (direction === "right") {
+      this.state.facing = 1;
+      if (this.parent.state.furnitureGrid[this.state.row][this.state.col + 1]) {
+        return;
+      }
       this.state.col += 1;
-      this.state.facing = 0;
     }
   }
 }
