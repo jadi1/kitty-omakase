@@ -6,6 +6,7 @@
  * handles window resizes.
  *
  */
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
 import { GameScene } from "scenes";
 import { numRows, numCols } from "./components/constants";
@@ -27,8 +28,17 @@ document.body.style.margin = 0; // Removes margin around page
 document.body.style.overflow = "hidden"; // Fix scrolling
 document.body.appendChild(canvas);
 
+// Set up orbit controls
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 4;
+controls.maxDistance = 16;
+controls.update();
+
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
+  controls.update();
   renderer.render(scene, camera);
   scene.update && scene.update(timeStamp);
   window.requestAnimationFrame(onAnimationFrameHandler);
