@@ -1,5 +1,5 @@
 import { Scene, Color } from "three";
-import { ToonCat, Table, Cabinet, Trash, Stove } from "objects";
+import { Floor, ToonCat, Table, Cabinet, Trash, Stove } from "objects";
 import { BasicLights } from "lights";
 import { numRows, numCols } from "../constants";
 
@@ -28,7 +28,15 @@ class GameScene extends Scene {
     // Add meshes to scene
     this.player = new ToonCat(this, 1, 1);
     const lights = new BasicLights();
-    this.add(this.player, lights);
+    this.player.scale.set(2,2,2);
+
+    // floor
+    const floor = new Floor;
+		floor.rotation.set(0,0,0);
+    floor.scale.set(0.5,0.5,0.5);
+		floor.position.set((numCols - 1) / 2, -.25, (numRows - 1) / 2);
+
+    this.add(floor, this.player, lights);
 
     const initialFurniture = [
       ["t", "t", "c", " ", " ", "t", "t", "t"],
