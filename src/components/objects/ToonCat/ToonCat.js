@@ -2,6 +2,7 @@ import { Group } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import MODEL from "./toon_cat_free.glb";
 import * as THREE from "three";
+import { facings } from "../../constants";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -10,13 +11,11 @@ class ToonCat extends Group {
     this.parent = parent;
 
     // Init state
-    this.state = {
-      row: row,
-      col: col,
-      facing: 0,
-      heldObject: null,
-      isAnimating: false,
-    };
+    this.row = row;
+    this.col = col;
+    this.facing = facings.DOWN;
+    this.heldObject = null;
+    this.isAnimating = false;
 
     // Load object
     const loader = new GLTFLoader();
@@ -52,7 +51,7 @@ class ToonCat extends Group {
     parent.addToUpdateList(this);
   }
 
-  pickupDrop(event) {
+  pickupDrop() {
     if (this.heldObject == null) {
       this.pickUp();
     } else {
@@ -71,7 +70,7 @@ class ToonCat extends Group {
         event.key === "ArrowDown" ||
         event.key === "ArrowLeft" ||
         event.key === "ArrowRight") &&
-      !this.state.isAnimating
+      !this.isAnimating
     ) {
       this.startAnimation();
     }
@@ -92,13 +91,13 @@ class ToonCat extends Group {
   startAnimation() {
     if (!this.action) return;
     this.action.play();
-    this.state.isAnimating = true;
+    this.isAnimating = true;
   }
 
   stopAnimation() {
     if (!this.action) return;
     this.action.stop();
-    this.state.isAnimating = false;
+    this.isAnimating = false;
   }
 
   update(timeStamp) {
@@ -109,48 +108,112 @@ class ToonCat extends Group {
       this.mixer.update(delta);
     }
 
-    this.position.z = this.state.row * 1;
-    this.position.x = this.state.col * 1;
-    this.rotation.y = (this.state.facing * Math.PI) / 2;
+    this.position.z = this.row * 1;
+    this.position.x = this.col * 1;
+    this.rotation.y = (this.facing * Math.PI) / 2;
   }
 
   move(direction) {
     if (direction === "forward") {
-      this.state.facing = 2;
-      if (this.parent.state.furnitureGrid[this.state.row - 1][this.state.col]) {
+      this.facing = facings.UP;
+      if (
+        this.parent.state.furnitureGrid[this.row - 1][this.col] ||
+        this.parent.state.itemGrid[this.row - 1][this.col]
+      ) {
         return;
       }
-      this.state.row -= 1;
+      this.row -= 1;
     }
     if (direction === "backward") {
-      this.state.facing = 0;
-      if (this.parent.state.furnitureGrid[this.state.row + 1][this.state.col]) {
+      this.facing = facings.DOWN;
+      if (
+        this.parent.state.furnitureGrid[this.row + 1][this.col] ||
+        this.parent.state.itemGrid[this.row + 1][this.col]
+      ) {
         return;
       }
-      this.state.row += 1;
+      this.row += 1;
     }
     if (direction === "left") {
-      this.state.facing = 3;
-      if (this.parent.state.furnitureGrid[this.state.row][this.state.col - 1]) {
+      this.facing = facings.LEFT;
+      if (
+        this.parent.state.furnitureGrid[this.row][this.col - 1] ||
+        this.parent.state.itemGrid[this.row][this.col - 1]
+      ) {
         return;
       }
-      this.state.col -= 1;
+      this.col -= 1;
     }
     if (direction === "right") {
-      this.state.facing = 1;
-      if (this.parent.state.furnitureGrid[this.state.row][this.state.col + 1]) {
+      this.facing = facings.RIGHT;
+      if (
+        this.parent.state.furnitureGrid[this.row][this.col + 1] ||
+        this.parent.state.itemGrid[this.row][this.col + 1]
+      ) {
         return;
       }
-      this.state.col += 1;
+      this.col += 1;
     }
   }
 
   pickUp() {
     console.log("pick up");
+    const facing = this.facing;
+    let targetRow = this.row;
+    let targetCol = this.col;
+
+    if (facing === facings.UP) {
+      targetRow -= 1;
+    } else if (facing === facings.DOWN) {
+      targetRow += 1;
+    } else if (facing === facings.LEFT) {
+      targetCol -= 1;
+    } else if (facing === facings.RIGHT) {
+      targetCol += 1;
+    }
+
+    const item = this.parent.state.itemGrid[targetRow][targetCol];
+    if (item) {
+      this.heldObject = item;
+      this.parent.state.itemGrid[targetRow][targetCol] = null;
+      item.beGrabbed(this);
+      console.log("Picked up:", item);
+    }
   }
 
   drop() {
     console.log("drop");
+    if (this.heldObject == null) {
+      return;
+    }
+
+    const facing = this.facing;
+    let targetRow = this.row;
+    let targetCol = this.col;
+
+    if (facing === facings.UP) {
+      targetRow -= 1;
+    } else if (facing === facings.DOWN) {
+      targetRow += 1;
+    } else if (facing === facings.LEFT) {
+      targetCol -= 1;
+    } else if (facing === facings.RIGHT) {
+      targetCol += 1;
+    }
+
+    // const item = this.parent.state.itemGrid[targetRow][targetCol];
+    // Only drop if the target cell is empty
+    if (this.parent.state.itemGrid[targetRow][targetCol] == null) {
+      const item = this.heldObject;
+      this.parent.state.itemGrid[targetRow][targetCol] = item;
+      item.row = targetRow;
+      item.col = targetCol;
+      console.log(item);
+
+      item.beDropped();
+
+      this.heldObject = null;
+    }
   }
 }
 

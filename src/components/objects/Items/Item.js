@@ -13,8 +13,14 @@ class Item extends Group {
   }
 
   beGrabbed(player) {
+    console.log("be grabbed");
     this.isHeld = true;
     this.heldBy = player;
+  }
+
+  beDropped() {
+    this.isHeld = false;
+    this.heldBy = null;
   }
 
   update(timeStamp) {
