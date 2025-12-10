@@ -12,6 +12,8 @@ class Plate extends Item {
       this.model = gltf.scene;
       this.model.scale.set(0.5, 0.5, 0.5);
     });
+
+    this.foodItems = [];
   }
 }
 
