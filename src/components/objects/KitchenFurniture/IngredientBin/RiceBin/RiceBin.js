@@ -1,15 +1,14 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { sharedLoader } from "../../loader";
 import MODEL from "./ricebin.glb";
-import KitchenFurniture from "../KitchenFurniture";
+import IngredientBin from "../IngredientBin";
 
-class RiceBin extends KitchenFurniture {
+class RiceBin extends IngredientBin {
   constructor(parent, row = 0, col = 0) {
-    super(parent, row, col);
+    super(parent, row, col, "rice");
 
     // load specific model
-    const loader = new GLTFLoader();
     this.name = "ricebin";
-    loader.load(MODEL, (gltf) => {
+    sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
       this.model = gltf.scene;
       this.model.scale.set(0.5, 0.5, 0.5);

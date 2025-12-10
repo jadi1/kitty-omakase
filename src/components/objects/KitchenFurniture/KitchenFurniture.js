@@ -7,11 +7,15 @@ class KitchenFurniture extends Group {
     this.row = row;
     this.col = col;
     parent.addToUpdateList(this);
+    parent.add(this);
   }
 
   update(timeStamp) {
     this.position.z = this.row * tileSize;
     this.position.x = this.col * tileSize;
+  }
+  interact() {
+    console.log("interact with kitchen furniture");
   }
 }
 

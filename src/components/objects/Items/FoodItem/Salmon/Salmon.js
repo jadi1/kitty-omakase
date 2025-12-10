@@ -1,12 +1,12 @@
-import { sharedLoader } from "../../loader.js";
-import MODEL from "./plate.glb";
-import Item from "../Item";
+import { sharedLoader } from "../../../loader";
+import MODEL from "./salmon.glb";
+import FoodItem from "../FoodItem";
 
-class Plate extends Item {
+class Salmon extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
 
-    this.name = "plate";
+    this.name = "salmon";
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
       this.model = gltf.scene;
@@ -15,4 +15,4 @@ class Plate extends Item {
   }
 }
 
-export default Plate;
+export default Salmon;

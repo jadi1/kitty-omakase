@@ -1,15 +1,14 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { sharedLoader } from "../../loader";
 import MODEL from "./noribin.glb";
-import KitchenFurniture from "../KitchenFurniture";
+import IngredientBin from "../IngredientBin";
 
-class NoriBin extends KitchenFurniture {
+class NoriBin extends IngredientBin {
   constructor(parent, row = 0, col = 0) {
-    super(parent, row, col);
+    super(parent, row, col, "nori");
 
     // load specific model
-    const loader = new GLTFLoader();
     this.name = "noribin";
-    loader.load(MODEL, (gltf) => {
+    sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
       this.model = gltf.scene;
       this.model.scale.set(0.5, 0.5, 0.5);

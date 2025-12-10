@@ -1,5 +1,5 @@
 import { Group } from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { sharedLoader } from "../loader";
 import MODEL from "./toon_cat_free.glb";
 import * as THREE from "three";
 import { facings } from "../../constants";
@@ -18,10 +18,8 @@ class ToonCat extends Group {
     this.isAnimating = false;
 
     // Load object
-    const loader = new GLTFLoader();
-
     this.name = "cat";
-    loader.load(MODEL, (gltf) => {
+    sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
 
       this.model = gltf.scene;
@@ -61,6 +59,20 @@ class ToonCat extends Group {
 
   interact(event) {
     console.log("interact");
+
+    const { targetRow, targetCol } = this.getTargetCell();
+    
+    const furniture = this.parent.state.furnitureGrid[targetRow][targetCol];
+    if (furniture) {
+      furniture.interact(this);
+    }
+    // Checks the furniture grid first
+// if its chopping board, check the item grid to see if there’s food on it
+// If so, chopItem()
+// If its ingredient cabinet, check the item grid to see if there’s anything on it
+// If not, get ingredient cabinet.Food and set player.heldObject ot that food
+// If so, do nothing
+
   }
 
   handleKeyDown(event) {
@@ -156,8 +168,7 @@ class ToonCat extends Group {
     }
   }
 
-  pickUp() {
-    console.log("pick up");
+  getTargetCell() {
     const facing = this.facing;
     let targetRow = this.row;
     let targetCol = this.col;
@@ -171,6 +182,12 @@ class ToonCat extends Group {
     } else if (facing === facings.RIGHT) {
       targetCol += 1;
     }
+    return {targetRow, targetCol};
+  }
+
+  pickUp() {
+    console.log("pick up");
+    const { targetRow, targetCol } = this.getTargetCell();
 
     const item = this.parent.state.itemGrid[targetRow][targetCol];
     if (item) {
@@ -186,22 +203,8 @@ class ToonCat extends Group {
     if (this.heldObject == null) {
       return;
     }
+    const { targetRow, targetCol } = this.getTargetCell();
 
-    const facing = this.facing;
-    let targetRow = this.row;
-    let targetCol = this.col;
-
-    if (facing === facings.UP) {
-      targetRow -= 1;
-    } else if (facing === facings.DOWN) {
-      targetRow += 1;
-    } else if (facing === facings.LEFT) {
-      targetCol -= 1;
-    } else if (facing === facings.RIGHT) {
-      targetCol += 1;
-    }
-
-    // const item = this.parent.state.itemGrid[targetRow][targetCol];
     // Only drop if the target cell is empty
     if (this.parent.state.itemGrid[targetRow][targetCol] == null) {
       const item = this.heldObject;

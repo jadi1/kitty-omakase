@@ -10,10 +10,11 @@ import {
   Plate,
   Pot,
   FishBin,
+  NoriBin,
   RiceBin,
 } from "objects";
 import { BasicLights } from "lights";
-import { numRows, numCols } from "../constants";
+import { numRows, numCols, food } from "../constants";
 
 class GameScene extends Scene {
   constructor() {
@@ -56,7 +57,7 @@ class GameScene extends Scene {
       ["x", " ", " ", " ", " ", " ", " ", "t"],
       ["t", " ", " ", "s", "s", " ", " ", "t"],
       ["t", " ", " ", " ", " ", " ", " ", "t"],
-      ["t", "t", "1", "1", "2", "2", "t", "t"],
+      ["t", "t", "1", "2", "3", "2", "t", "t"],
     ];
     this.populateFurnitureGrid(initialFurniture);
 
@@ -84,38 +85,35 @@ class GameScene extends Scene {
         switch (item) {
           case "t":
             furnitureObject = new Table(this, row, col);
-            this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           case "c":
             furnitureObject = new Cabinet(this, row, col);
-            this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           case "x":
             furnitureObject = new Trash(this, row, col);
-            this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           case "s":
             furnitureObject = new Stove(this, row, col);
-            this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           case "d":
             furnitureObject = new Delivery(this, row, col);
-            this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             this.state.furnitureGrid[row][col + 1] = furnitureObject;
             break;
           case "1":
             furnitureObject = new FishBin(this, row, col);
-            this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           case "2":
             furnitureObject = new RiceBin(this, row, col);
-            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "3":
+            furnitureObject = new NoriBin(this, row, col);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           // Add more cases for different furniture types as needed
@@ -135,12 +133,10 @@ class GameScene extends Scene {
         switch (item) {
           case "p":
             itemObject = new Plate(this, row, col);
-            this.add(itemObject);
             this.state.itemGrid[row][col] = itemObject;
             break;
           case "o":
             itemObject = new Pot(this, row, col);
-            this.add(itemObject);
             this.state.itemGrid[row][col] = itemObject;
             break;
           // Add more cases for different item types as needed

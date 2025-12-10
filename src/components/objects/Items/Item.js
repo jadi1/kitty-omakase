@@ -10,6 +10,7 @@ class Item extends Group {
     this.heldBy = null;
 
     parent.addToUpdateList(this);
+    parent.add(this);
   }
 
   beGrabbed(player) {
@@ -27,8 +28,19 @@ class Item extends Group {
     if (!this.isHeld) {
       this.position.z = this.row * tileSize;
       this.position.x = this.col * tileSize;
+
+      // if on furniture, set y to furniture height (assumed 0 here)
+      if (this.parent && this.parent.state && this.parent.state.furnitureGrid) {
+        const furniture = this.parent.state.furnitureGrid[this.row][this.col];
+        if (furniture) {
+          this.position.y = 0.5; // Adjust based on furniture height if needed
+        } else {
+          this.position.y = 0; // Ground level
+        }
+      }
     } else if (this.heldBy) {
       this.position.z = this.heldBy.position.z;
+      this.position.y = this.heldBy.position.y + 1; // Slightly above the player
       this.position.x = this.heldBy.position.x;
     }
   }
