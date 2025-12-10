@@ -46,6 +46,7 @@ class SeedScene extends Scene {
             obj.update(timeStamp);
         }
     }
+  }
 }
 
 export default SeedScene;
