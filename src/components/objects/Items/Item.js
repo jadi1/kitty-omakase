@@ -14,8 +14,8 @@ class Item extends Group {
 
   beGrabbed(player) {
     console.log("be grabbed");
-    // this.isHeld = true;
-    // this.heldBy = player;
+    this.isHeld = true;
+    this.heldBy = player;
   }
 
   beDropped() {

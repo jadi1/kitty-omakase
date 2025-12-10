@@ -197,7 +197,6 @@ class ToonCat extends Group {
       item.row = targetRow;
       item.col = targetCol;
       console.log(item);
-      item.beGrabbed(this);
 
       item.beDropped();
 
