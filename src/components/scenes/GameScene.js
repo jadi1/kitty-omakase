@@ -1,5 +1,13 @@
 import { Scene, Color } from "three";
-import { Floor, ToonCat, Table, Cabinet, Trash, Stove } from "objects";
+import {
+  Floor,
+  ToonCat,
+  Table,
+  Cabinet,
+  Trash,
+  Stove,
+  Delivery,
+} from "objects";
 import { BasicLights } from "lights";
 import { numRows, numCols } from "../constants";
 
@@ -28,18 +36,18 @@ class GameScene extends Scene {
     // Add meshes to scene
     this.player = new ToonCat(this, 1, 1);
     const lights = new BasicLights();
-    this.player.scale.set(2,2,2);
+    this.player.scale.set(2, 2, 2);
 
     // floor
-    const floor = new Floor;
-		floor.rotation.set(0,0,0);
-    floor.scale.set(0.5,0.5,0.5);
-		floor.position.set((numCols - 1) / 2, -.25, (numRows - 1) / 2);
+    const floor = new Floor();
+    floor.rotation.set(0, 0, 0);
+    floor.scale.set(0.5, 0.5, 0.5);
+    floor.position.set((numCols - 1) / 2, -0.25, (numRows - 1) / 2);
 
     this.add(floor, this.player, lights);
 
     const initialFurniture = [
-      ["t", "t", "c", " ", " ", "t", "t", "t"],
+      ["t", "t", "c", "d", " ", "t", "t", "t"],
       ["t", " ", " ", " ", " ", " ", " ", "t"],
       ["x", " ", " ", " ", " ", " ", " ", "t"],
       ["t", " ", " ", "s", "s", " ", " ", "t"],
@@ -80,6 +88,12 @@ class GameScene extends Scene {
             furnitureObject = new Stove(this, row, col);
             this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "d":
+            furnitureObject = new Delivery(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            this.state.furnitureGrid[row][col + 1] = furnitureObject;
             break;
           // Add more cases for different furniture types as needed
           default:

@@ -6,7 +6,7 @@
  * handles window resizes.
  *
  */
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
 import { GameScene } from "scenes";
 import { numRows, numCols } from "./components/constants";
