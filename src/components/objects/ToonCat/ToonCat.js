@@ -51,6 +51,19 @@ class ToonCat extends Group {
     // Add self to parent's update list
     parent.addToUpdateList(this);
   }
+
+  pickupDrop(event) {
+    if (this.heldObject == null) {
+      this.pickUp();
+    } else {
+      this.drop();
+    }
+  }
+
+  interact(event) {
+    console.log("interact");
+  }
+
   handleKeyDown(event) {
     // Only start if not already animating (prevents retriggering)
     if (
@@ -130,6 +143,14 @@ class ToonCat extends Group {
       }
       this.state.col += 1;
     }
+  }
+
+  pickUp() {
+    console.log("pick up");
+  }
+
+  drop() {
+    console.log("drop");
   }
 }
 
