@@ -3,5 +3,7 @@ export * from "./Trash";
 export * from "./Table";
 export * from "./Stove";
 export * from "./Delivery";
+export * from "./RiceBin";
+export * from "./FishBin";
 export * from "./CuttingBoardTable";
 export { default as KitchenFurniture } from "./KitchenFurniture.js";

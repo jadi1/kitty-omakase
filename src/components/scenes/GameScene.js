@@ -9,6 +9,8 @@ import {
   Delivery,
   Plate,
   Pot,
+  FishBin,
+  RiceBin,
 } from "objects";
 import { BasicLights } from "lights";
 import { numRows, numCols } from "../constants";
@@ -54,7 +56,7 @@ class GameScene extends Scene {
       ["x", " ", " ", " ", " ", " ", " ", "t"],
       ["t", " ", " ", "s", "s", " ", " ", "t"],
       ["t", " ", " ", " ", " ", " ", " ", "t"],
-      ["t", "t", " ", " ", " ", " ", "t", "t"],
+      ["t", "t", "1", "1", "2", "2", "t", "t"],
     ];
     this.populateFurnitureGrid(initialFurniture);
 
@@ -105,6 +107,16 @@ class GameScene extends Scene {
             this.add(furnitureObject);
             this.state.furnitureGrid[row][col] = furnitureObject;
             this.state.furnitureGrid[row][col + 1] = furnitureObject;
+            break;
+          case "1":
+            furnitureObject = new FishBin(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "2":
+            furnitureObject = new RiceBin(this, row, col);
+            this.add(furnitureObject);
+            this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           // Add more cases for different furniture types as needed
           default:

@@ -13,7 +13,6 @@ class FishBin extends KitchenFurniture {
       this.add(gltf.scene);
       this.model = gltf.scene;
       this.model.scale.set(0.5, 0.5, 0.5);
-      this.model.position.set(0.5, 0, 0);
     });
   }
 }
