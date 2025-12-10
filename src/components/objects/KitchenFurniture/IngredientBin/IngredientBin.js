@@ -34,7 +34,6 @@ class IngredientBin extends KitchenFurniture {
         return;
     }
 
-    this.parent.state.itemGrid[this.row][this.col] = foodItem;
     foodItem.beGrabbed(this.parent.player);
     this.parent.player.heldObject = foodItem;
   }

@@ -210,13 +210,14 @@ class ToonCat extends Group {
 
   drop() {
     console.log("drop");
-    if (this.heldObject == null) {
-      return;
-    }
+
     const { targetRow, targetCol } = this.getTargetCell();
 
+    console.log(this.parent.state.itemGrid);
     // Only drop if the target cell is empty
     if (this.parent.state.itemGrid[targetRow][targetCol] == null) {
+      console.log("Dropping item");
+      
       const item = this.heldObject;
       this.parent.state.itemGrid[targetRow][targetCol] = item;
       item.row = targetRow;
