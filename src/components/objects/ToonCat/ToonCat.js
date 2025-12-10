@@ -51,7 +51,7 @@ class ToonCat extends Group {
     parent.addToUpdateList(this);
   }
 
-  pickupDrop(event) {
+  pickupDrop() {
     if (this.heldObject == null) {
       this.pickUp();
     } else {
