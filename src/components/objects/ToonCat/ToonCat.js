@@ -14,7 +14,7 @@ class ToonCat extends Group {
     this.row = row;
     this.col = col;
     this.facing = facings.DOWN;
-    this.heldObject =null;
+    this.heldObject = null;
     this.isAnimating = false;
 
     // Load object
@@ -116,28 +116,40 @@ class ToonCat extends Group {
   move(direction) {
     if (direction === "forward") {
       this.facing = facings.UP;
-      if (this.parent.state.furnitureGrid[this.row - 1][this.col]) {
+      if (
+        this.parent.state.furnitureGrid[this.row - 1][this.col] ||
+        this.parent.state.itemGrid[this.row - 1][this.col]
+      ) {
         return;
       }
       this.row -= 1;
     }
     if (direction === "backward") {
       this.facing = facings.DOWN;
-      if (this.parent.state.furnitureGrid[this.row + 1][this.col]) {
+      if (
+        this.parent.state.furnitureGrid[this.row + 1][this.col] ||
+        this.parent.state.itemGrid[this.row + 1][this.col]
+      ) {
         return;
       }
       this.row += 1;
     }
     if (direction === "left") {
       this.facing = facings.LEFT;
-      if (this.parent.state.furnitureGrid[this.row][this.col - 1]) {
+      if (
+        this.parent.state.furnitureGrid[this.row][this.col - 1] ||
+        this.parent.state.itemGrid[this.row][this.col - 1]
+      ) {
         return;
       }
       this.col -= 1;
     }
     if (direction === "right") {
       this.facing = facings.RIGHT;
-      if (this.parent.state.furnitureGrid[this.row][this.col + 1]) {
+      if (
+        this.parent.state.furnitureGrid[this.row][this.col + 1] ||
+        this.parent.state.itemGrid[this.row][this.col + 1]
+      ) {
         return;
       }
       this.col += 1;
