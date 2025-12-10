@@ -7,6 +7,8 @@ import {
   Trash,
   Stove,
   Delivery,
+  Plate,
+  Pot,
 } from "objects";
 import { BasicLights } from "lights";
 import { numRows, numCols } from "../constants";
@@ -54,8 +56,17 @@ class GameScene extends Scene {
       ["t", " ", " ", " ", " ", " ", " ", "t"],
       ["t", "t", " ", " ", " ", " ", "t", "t"],
     ];
-
     this.populateFurnitureGrid(initialFurniture);
+
+    const initialItems = [
+      [" ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", "p", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", " ", " "],
+    ];
+    this.populateItemGrid(initialItems);
 
     // gemini told me to put this here
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -96,6 +107,31 @@ class GameScene extends Scene {
             this.state.furnitureGrid[row][col + 1] = furnitureObject;
             break;
           // Add more cases for different furniture types as needed
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  populateItemGrid(itemLayout) {
+    for (let row = 0; row < itemLayout.length; row++) {
+      for (let col = 0; col < itemLayout[row].length; col++) {
+        const item = itemLayout[row][col];
+        let itemObject = null;
+
+        switch (item) {
+          case "p":
+            itemObject = new Plate(this, row, col);
+            this.add(itemObject);
+            this.state.itemGrid[row][col] = itemObject;
+            break;
+          case "o":
+            itemObject = new Pot(this, row, col);
+            this.add(itemObject);
+            this.state.itemGrid[row][col] = itemObject;
+            break;
+          // Add more cases for different item types as needed
           default:
             break;
         }
