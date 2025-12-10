@@ -47,7 +47,7 @@ class GameScene extends Scene {
     const floor = new Floor();
     floor.rotation.set(0, 0, 0);
     floor.scale.set(0.5, 0.5, 0.5);
-    floor.position.set((numCols - 1) / 2, -0.25, (numRows - 1) / 2);
+    floor.position.set((numCols - 1) / 2, -.1, (numRows - 1) / 2);
 
     this.add(floor, this.player, lights);
 

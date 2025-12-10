@@ -33,9 +33,9 @@ class Item extends Group {
       if (this.parent && this.parent.state && this.parent.state.furnitureGrid) {
         const furniture = this.parent.state.furnitureGrid[this.row][this.col];
         if (furniture) {
-          this.position.y = 0.5; // Adjust based on furniture height if needed
+          this.position.y = 0.51; // Adjust based on furniture height if needed
         } else {
-          this.position.y = 0; // Ground level
+          this.position.y = 0.1; // Ground level
         }
       }
     } else if (this.heldBy) {

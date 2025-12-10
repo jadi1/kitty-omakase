@@ -1,4 +1,4 @@
-import { sharedLoader } from "../../loader";
+import { sharedLoader } from "../../../loader";
 import MODEL from "./ricebin.glb";
 import IngredientBin from "../IngredientBin";
 

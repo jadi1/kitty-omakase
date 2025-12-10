@@ -3,6 +3,7 @@ import { sharedLoader } from "../loader";
 import MODEL from "./toon_cat_free.glb";
 import * as THREE from "three";
 import { facings } from "../../constants";
+import IngredientBin from "../KitchenFurniture/IngredientBin/IngredientBin";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -195,6 +196,15 @@ class ToonCat extends Group {
       this.parent.state.itemGrid[targetRow][targetCol] = null;
       item.beGrabbed(this);
       console.log("Picked up:", item);
+      return;
+    }
+
+    // special case: if there's an ingredient bin at the target cell, pick up that item
+    const furniture = this.parent.state.furnitureGrid[targetRow][targetCol] ;
+    if (furniture && furniture instanceof IngredientBin) {
+      console.log("INGREDIENT BIN DETECTED");
+      furniture.pickup();
+      return;
     }
   }
 
