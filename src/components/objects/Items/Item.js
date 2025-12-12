@@ -43,8 +43,6 @@ class Item extends Group {
         const furniture = this.parent.state.furnitureGrid[this.row][this.col];
         if (furniture) {
           if (furniture.name == "stove") {
-            console.log("stove found");
-            console.log(this.name);
             this.position.y = .55; // Adjust based on stove height if needed
           } else if (furniture.name == "cuttingboard") {
             this.position.y = 0.58; // Adjust based on sink height if needed

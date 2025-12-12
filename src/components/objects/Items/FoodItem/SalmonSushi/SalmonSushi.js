@@ -1,8 +1,8 @@
 import { sharedLoader } from "../../../loader";
-import MODEL from "./tunasushi.glb";
+import MODEL from "./salmonsushi.glb";
 import FoodItem from "../FoodItem";
 
-class TunaSushi extends FoodItem {
+class SalmonSushi extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
     
@@ -14,4 +14,4 @@ class TunaSushi extends FoodItem {
   }
 }
 
-export default TunaSushi;
+export default SalmonSushi;

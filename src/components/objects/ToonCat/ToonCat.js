@@ -6,6 +6,7 @@ import { facings } from "../../constants";
 import IngredientBin from "../KitchenFurniture/IngredientBin/IngredientBin";
 import Trash from "../KitchenFurniture/Trash/Trash";
 import Pot from "../Items/Pot/Pot";
+import Plate from "../Items/Plate/Plate";
 import FoodItem from "../Items/FoodItem/FoodItem";
 
 class ToonCat extends Group {
@@ -224,7 +225,6 @@ class ToonCat extends Group {
       return;
     }
 
-    // Only drop if the target cell is empty
     const item = this.parent.state.itemGrid[targetRow][targetCol];
     if (item == null) {
       // drop if the target cell is empty
@@ -239,7 +239,7 @@ class ToonCat extends Group {
       this.heldObject = null;
     } else {
       if (item instanceof FoodItem) {
-        // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
+        // if target cell has a prepared food item and the item you're currently holding is food, combine them !
         // if you/item are holding plate and prepared food, combine them
         if (held instanceof Pot) {
           console.log("Placing pot onto item");
@@ -248,10 +248,15 @@ class ToonCat extends Group {
             this.parent.state.itemGrid[targetRow][targetCol] = held;
             held.row = targetRow;
             held.col = targetCol;
-
             item.beGrabbed(held);
             held.beDropped();
             this.heldObject = null;
+          }
+        } else if (held instanceof Plate) {
+          console.log("Placing food onto plate");
+          const success = held.receiveObject(item);
+          if (success) {
+            console.log("successfully placed food on plate");
           }
         }
       } else if (item instanceof Pot) {
@@ -260,6 +265,15 @@ class ToonCat extends Group {
         if (success) {
           this.heldObject = null;
           held.beGrabbed(item);
+        }
+      }
+      else if (item instanceof Plate) {
+        console.log("Placing food onto plate");
+        const success = item.receiveObject(held);
+        if (success) {
+          this.heldObject = null;
+          held.beGrabbed(item);
+          console.log("successfully placed food on plate");
         }
       }
     }
