@@ -1,4 +1,5 @@
 import { Scene, Color } from "three";
+import RecipeList from "../ui/RecipeList.js";
 import {
   Floor,
   ToonCat,
@@ -45,6 +46,10 @@ class GameScene extends Scene {
     const lights = new BasicLights();
     this.player.scale.set(2, 2, 2);
 
+    // recipe list ui overlay
+    this.recipeList = new RecipeList();
+    this.recipeList.show();
+
     // floor
     const floor = new Floor();
     floor.rotation.set(0, 0, 0);
@@ -73,7 +78,6 @@ class GameScene extends Scene {
     ];
     this.populateItemGrid(initialItems);
 
-    // gemini told me to put this here
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
@@ -212,6 +216,9 @@ class GameScene extends Scene {
     for (const obj of updateList) {
       obj.update(timeStamp);
     }
+  }
+  destroy() {
+    if (this.recipeList && typeof this.recipeList.destroy === "function") this.recipeList.destroy();
   }
 }
 
