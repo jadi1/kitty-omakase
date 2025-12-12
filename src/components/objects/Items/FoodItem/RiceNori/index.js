@@ -1,1 +1,1 @@
-export { default as Nori } from './RiceNori.js';
+export { default as RiceNori } from './RiceNori.js';
