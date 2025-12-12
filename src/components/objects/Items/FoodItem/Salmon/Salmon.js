@@ -20,7 +20,7 @@ class Salmon extends FoodItem {
     sharedLoader.load(CHOPPED_MODEL, (gltf) => {
       this.add(gltf.scene);
       this.choppedModel = gltf.scene;
-      this.choppedModel.scale.set(0.1, 0.1, 0.1);
+      this.choppedModel.scale.set(0.15, 0.15, 0.15);
       this.choppedModel.visible = false;
     });
   }

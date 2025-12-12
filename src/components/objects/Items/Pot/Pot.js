@@ -27,6 +27,7 @@ class Pot extends Item {
   receiveObject(object) {
     if (this.heldObject == null && object instanceof Rice) {
       this.heldObject = object;
+      this.heldObject.prepare();
       console.log(`${object.name} placed in pot.`);
       return true;
     } else {
