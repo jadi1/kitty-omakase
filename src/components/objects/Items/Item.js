@@ -30,10 +30,6 @@ class Item extends Group {
     return;
   }
 
-  delete() {
-    this.parent.removeFromUpdateList(this);
-    this.parent.remove(this);
-  }
 
   update(timeStamp) {
     if (!this.isHeld) {
@@ -59,9 +55,9 @@ class Item extends Group {
       this.position.z = this.heldBy.position.z;
       this.position.x = this.heldBy.position.x;
       if (this.heldBy.name == "plate") {
-        this.position.y = this.heldBy.position.y + .1; // slightly above plate
+        this.position.y = this.heldBy.position.y + .05; // slightly above plate
       } else {
-        this.position.y = this.heldBy.position.y + .7;
+        this.position.y = this.heldBy.position.y + .7; // above player
       }
     }
   }

@@ -23,15 +23,19 @@ class PreparedFood extends FoodItem {
 
   // figures out what mesh to load based on name
   loadMesh(name) {
+    // check if same name
+    if (name == this.name) {
+      return true;
+    }
     // if there is already a mesh, remove it
     if (this.model) {
       this.remove(this.model);
       this.model = null;
     }
+    console.log("new mesh name: ", name);
 
     const master = masterMeshes[name];
     if (!master) {
-      console.log(master);
       console.warn("No master mesh for", name);
       return false;
     }
@@ -41,17 +45,19 @@ class PreparedFood extends FoodItem {
     instance.visible = true;
     this.add(instance);
     this.model = instance;
+    this.name = name;
     return true;
   }
 
   receiveObject(object) {
-    console.log(object)
+    console.log("prepared food received, ", object);
     let newFoodName;
     if (object instanceof Pot && object.isPrepared == true) {
       newFoodName = food.RICE;
     } else {
       newFoodName = object.name;
     }
+    console.log(this.name, newFoodName);
 
     const combinedFoodName = this.getNewFood(this.name, newFoodName);
     if (combinedFoodName == null) {
@@ -59,7 +65,6 @@ class PreparedFood extends FoodItem {
       return false; // just exit, nothing returned
     }
     object.trash(); // get rid of old object
-    this.name = combinedFoodName;
     this.loadMesh(combinedFoodName);
     return true;
   }
