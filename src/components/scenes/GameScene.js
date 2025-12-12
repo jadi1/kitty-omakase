@@ -76,6 +76,8 @@ class GameScene extends Scene {
       [" ", " ", " ", " ", " ", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
     ];
+    this.plateSpawnRow = 1;
+    this.plateSpawnCol = 7;
     this.populateItemGrid(initialItems);
 
     this.handleKeyDown = this.handleKeyDown.bind(this);

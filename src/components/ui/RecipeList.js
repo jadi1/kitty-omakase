@@ -44,6 +44,23 @@ export default class RecipeList {
       card.appendTo(this.cardsWrapper);
     }
   }
+  repopulate(oldCard) {
+    // remove old card from list
+		const index = this.cards.indexOf(oldCard);
+		setTimeout(() => {
+			oldCard.destroy();
+		}, 100);
+		// remove this card and shift all the cards forward
+		if (index > -1) {
+			this.cards.splice(index, 1);
+		}
+		// create a new card and add to the end of the list with some delay
+		setTimeout(() => {
+			const newCard = new RecipeCard(this.getRandomRecipe());
+			this.cards.push(newCard);
+			newCard.appendTo(this.cardsWrapper);
+		}, 2000);
+  }
 
   show() {
     if (!this.container.parentNode) document.body.appendChild(this.container);
