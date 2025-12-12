@@ -40,7 +40,7 @@ class Item extends Group {
       }
     } else if (this.heldBy) {
       this.position.z = this.heldBy.position.z;
-      this.position.y = this.heldBy.position.y + 1; // Slightly above the player
+      this.position.y = this.heldBy.position.y + .7; // Slightly above the player
       this.position.x = this.heldBy.position.x;
     }
   }
