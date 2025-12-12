@@ -4,7 +4,7 @@ import IngredientBin from "../IngredientBin";
 
 class TunaBin extends IngredientBin {
   constructor(parent, row = 0, col = 0) {
-    super(parent, row, col, "salmon");
+    super(parent, row, col, "tuna");
 
     // load specific model
     this.name = "tunabin";

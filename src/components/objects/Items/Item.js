@@ -24,6 +24,15 @@ class Item extends Group {
     this.heldBy = null;
   }
 
+  trash() {
+    return;
+  }
+
+  delete() {
+    this.parent.removeFromUpdateList(this);
+    this.parent.remove(this);
+  }
+
   update(timeStamp) {
     if (!this.isHeld) {
       this.position.z = this.row * tileSize;

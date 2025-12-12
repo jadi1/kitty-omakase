@@ -4,6 +4,9 @@ import MODEL from "./toon_cat_free.glb";
 import * as THREE from "three";
 import { facings } from "../../constants";
 import IngredientBin from "../KitchenFurniture/IngredientBin/IngredientBin";
+import Trash from "../KitchenFurniture/Trash/Trash";
+import Pot from "../Items/Pot/Pot";
+import FoodItem from "../Items/FoodItem/FoodItem";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -62,15 +65,14 @@ class ToonCat extends Group {
     console.log("interact");
 
     const { targetRow, targetCol } = this.getTargetCell();
-    
+
     const furniture = this.parent.state.furnitureGrid[targetRow][targetCol];
     if (furniture) {
       furniture.interact(this);
     }
     // Checks the furniture grid first
-// if its chopping board, check the item grid to see if there’s food on it
-// If so, chopItem()
-
+    // if its chopping board, check the item grid to see if there’s food on it
+    // If so, chopItem()
   }
 
   handleKeyDown(event) {
@@ -180,7 +182,7 @@ class ToonCat extends Group {
     } else if (facing === facings.RIGHT) {
       targetCol += 1;
     }
-    return {targetRow, targetCol};
+    return { targetRow, targetCol };
   }
 
   pickUp() {
@@ -197,7 +199,7 @@ class ToonCat extends Group {
     }
 
     // special case: if there's an ingredient bin at the target cell, pick up that item
-    const furniture = this.parent.state.furnitureGrid[targetRow][targetCol] ;
+    const furniture = this.parent.state.furnitureGrid[targetRow][targetCol];
     if (furniture && furniture instanceof IngredientBin) {
       console.log("INGREDIENT BIN DETECTED");
       furniture.pickup();
@@ -210,12 +212,25 @@ class ToonCat extends Group {
 
     const { targetRow, targetCol } = this.getTargetCell();
 
+    // trash
     console.log(this.parent.state.itemGrid);
-    const item = this.parent.state.itemGrid[targetRow][targetCol]
-    // drop if the target cell is empty
+    if (
+      this.parent.state.furnitureGrid[targetRow][targetCol] &&
+      this.parent.state.furnitureGrid[targetRow][targetCol] instanceof Trash
+    ) {
+      console.log("Trashing item");
+
+      const item = this.heldObject;
+      item.trash();
+      return;
+    }
+
+    // Only drop if the target cell is empty
+    const item = this.parent.state.itemGrid[targetRow][targetCol];
     if (item == null) {
+      // drop if the target cell is empty
       console.log("Dropping item");
-      
+
       const item = this.heldObject;
       this.parent.state.itemGrid[targetRow][targetCol] = item;
       item.row = targetRow;
@@ -225,10 +240,21 @@ class ToonCat extends Group {
       item.beDropped();
 
       this.heldObject = null;
-    } else if (item instanceof FoodItem) {
-      // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
-
-      // if you/item are holding plate and prepared food, combine them
+    } else {
+      if (item instanceof FoodItem) {
+        // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
+        // if you/item are holding plate and prepared food, combine them
+      } else if (item instanceof Pot) {
+        console.log("Placing item into pot");
+        const held = this.heldObject;
+        const pot = this.parent.state.itemGrid[targetRow][targetCol];
+        const success = pot.receiveObject(held);
+        if (success) {
+          this.heldObject = null;
+          held.beGrabbed(pot);
+          held.prepare();
+        }
+      }
     }
   }
 }

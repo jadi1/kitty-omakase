@@ -7,11 +7,13 @@ import {
   Trash,
   Stove,
   Delivery,
+  CuttingBoardTable,
   Plate,
   Pot,
   FishBin,
   NoriBin,
   RiceBin,
+  TunaBin,
 } from "objects";
 import { BasicLights } from "lights";
 import { numRows, numCols, food } from "../constants";
@@ -47,25 +49,25 @@ class GameScene extends Scene {
     const floor = new Floor();
     floor.rotation.set(0, 0, 0);
     floor.scale.set(0.5, 0.5, 0.5);
-    floor.position.set((numCols - 1) / 2, -.1, (numRows - 1) / 2);
+    floor.position.set((numCols - 1) / 2, -0.1, (numRows - 1) / 2);
 
     this.add(floor, this.player, lights);
 
     const initialFurniture = [
       ["t", "t", "c", "d", " ", "t", "t", "t"],
       ["t", " ", " ", " ", " ", " ", " ", "t"],
-      ["x", " ", " ", " ", " ", " ", " ", "t"],
-      ["t", " ", " ", "s", "s", " ", " ", "t"],
+      ["x", " ", " ", " ", " ", " ", " ", "u"],
+      ["t", " ", " ", "s", "s", " ", " ", "u"],
       ["t", " ", " ", " ", " ", " ", " ", "t"],
-      ["t", "t", "1", "2", "3", "2", "t", "t"],
+      ["t", "t", "1", "2", "3", "4", "t", "t"],
     ];
     this.populateFurnitureGrid(initialFurniture);
 
     const initialItems = [
       [" ", " ", " ", " ", " ", " ", " ", " "],
-      [" ", " ", " ", " ", " ", " ", "p", " "],
-      [" ", " ", " ", " ", " ", " ", "o", " "],
-      [" ", " ", " ", " ", " ", " ", " ", " "],
+      [" ", " ", " ", " ", " ", " ", " ", "p"],
+      [" ", " ", " ", " ", " ", " ", " ", ""],
+      [" ", " ", " ", "o", "o", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
     ];
@@ -104,6 +106,10 @@ class GameScene extends Scene {
             this.state.furnitureGrid[row][col] = furnitureObject;
             this.state.furnitureGrid[row][col + 1] = furnitureObject;
             break;
+          case "u":
+            furnitureObject = new CuttingBoardTable(this, row, col);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
           case "1":
             furnitureObject = new FishBin(this, row, col);
             this.state.furnitureGrid[row][col] = furnitureObject;
@@ -114,6 +120,10 @@ class GameScene extends Scene {
             break;
           case "3":
             furnitureObject = new NoriBin(this, row, col);
+            this.state.furnitureGrid[row][col] = furnitureObject;
+            break;
+          case "4":
+            furnitureObject = new TunaBin(this, row, col);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
           // Add more cases for different furniture types as needed
@@ -149,6 +159,13 @@ class GameScene extends Scene {
 
   addToUpdateList(object) {
     this.state.updateList.push(object);
+  }
+
+  removeFromUpdateList(object) {
+    const index = this.state.updateList.indexOf(object);
+    if (index > -1) {
+      this.state.updateList.splice(index, 1);
+    }
   }
 
   handleKeyDown(event) {
