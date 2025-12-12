@@ -35,7 +35,7 @@ class Pot extends Item {
       object.trash(); // stop rendering the rice
       return true;
     } else {
-      console.log("Pot already has an item.");
+      console.log("Invalid object or pot already has an item.");
       return false;
     }
   }

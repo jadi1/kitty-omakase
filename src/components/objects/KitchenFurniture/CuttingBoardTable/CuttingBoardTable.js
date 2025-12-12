@@ -21,14 +21,14 @@ class CuttingBoardTable extends KitchenFurniture {
 
   interact(player) {
     const item = this.parent.state.itemGrid[this.row][this.col];
-    if (item && item instanceof Salmon) {
+    if (item && item instanceof Salmon && item.isPrepared == false) {
+      item.trash();
       const newFood = new PreparedFood(this.parent, this.row,this.col, food.SALMON);
       this.parent.state.itemGrid[this.row][this.col] = newFood;
+    } else if (item && item instanceof Tuna && item.isPrepared == false) {
       item.trash();
-    } else if (item && item instanceof Tuna) {
       const newFood = new PreparedFood(this.parent, this.row,this.col, food.TUNA);
       this.parent.state.itemGrid[this.row][this.col] = newFood;
-      item.trash();
     }
   }
 }

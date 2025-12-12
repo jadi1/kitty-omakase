@@ -10,7 +10,11 @@ class FoodItem extends Item {
   trash() {
     super.delete();
     if (this.heldBy) {
-      this.heldBy.heldObject = null;
+      if (this.heldBy.name == "cat") {
+        this.heldBy.heldObject = null;
+      } else if (this.heldBy.name == "plate") {
+        this.heldBy.food = null;
+      }
     }
     removeMesh(this.mesh);
   }

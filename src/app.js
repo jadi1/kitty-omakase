@@ -62,5 +62,4 @@ async function startGame() {
   window.addEventListener("keydown", scene.handleKeyDown);
   window.addEventListener("keyup", scene.handleKeyUp);
 }
-
-startGame();
+await startGame();

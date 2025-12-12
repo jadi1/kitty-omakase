@@ -18,10 +18,10 @@ const masterMeshesData = [
   { name: "salmon", path: SALMON, scale: 0.15 },
   { name: "tuna", path: TUNA, scale: 0.15 },
   { name: "ricenori", path: RICENORI, scale: 0.25 },
-  { name: "salmonnori", path: SALMONNORI, scale: 0.15 },
-  { name: "salmonrice", path: SALMONRICE, scale: 0.15 },
+  { name: "salmonnori", path: SALMONNORI, scale: 0.25 },
+  { name: "salmonrice", path: SALMONRICE, scale: 0.25 },
   { name: "tunanori", path: TUNANORI, scale: 0.25 },
-  { name: "tunarice", path: TUNARICE, scale: 0.15 },
+  { name: "tunarice", path: TUNARICE, scale: 0.25 },
   { name: "salmonsushi", path: SALMONSUSHI, scale: 0.15 },
   { name: "tunasushi", path: TUNASUSHI, scale: 0.15 },
 ];

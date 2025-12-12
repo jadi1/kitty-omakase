@@ -249,19 +249,32 @@ class ToonCat extends Group {
       // if you are holding a plate
       } else if (held instanceof Plate) {
         console.log("Picking up item with plate");
-        if (held.food != null) { // dump contents of plate onto food
-          if (typeof item.receiveObject === 'function') { // check if that function is valid
-            const success = item.receiveObject(held.food);
-            if (success) {
-              held.trash(); // empty plate
-            }
+        if (held.food == null) {
+          const success = held.receiveObject(item);
+          if (success) {
+            item.trash(); // remove ingredients
           }
-        } else { // pick up contents with plate
+        } else { // plate is not empty
+          if (typeof item.receiveObject === 'function') { // check if that function is valid
             const success = held.receiveObject(item);
             if (success) {
-              item.trash(); // remove ingredients
+              item.trash(); // empty pot /remove ingredients
             }
+          }
         }
+        // if (held.food != null) { // dump contents of plate onto food
+        //   if (typeof item.receiveObject === 'function') { // check if that function is valid
+        //     const success = item.receiveObject(held.food);
+        //     if (success) {
+        //       held.trash(); // empty plate
+        //     }
+        //   }
+        // } else { // pick up contents with plate
+        //     const success = held.receiveObject(item);
+        //     if (success) {
+        //       item.trash(); // remove ingredients
+        //     }
+        // }
       // you are holding food
       } else {
         // you can try putting it in the plate/pot

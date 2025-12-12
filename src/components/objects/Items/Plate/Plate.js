@@ -27,7 +27,7 @@ class Plate extends Item {
   }
 
   receiveObject(object) {
-    console.log("plate is receiving object", object);
+    console.log("Plate is receiving object", object);
 
     // if plate is empty
     if (this.food == null) {
@@ -35,9 +35,10 @@ class Plate extends Item {
       const newFood = new PreparedFood(this.parent, this.row, this.col, "");
       this.food = newFood;
       this.food.beGrabbed(this);
-      const success = this.food.receiveObject(object); 
+      const success = this.food.receiveObject(object);
+      console.log(newFood); 
       if (success) {
-        console.log("EXCELLENT");
+        console.log("Plate successfully received object");
         object.trash(); // empty pot / clear food
       }
       return success;

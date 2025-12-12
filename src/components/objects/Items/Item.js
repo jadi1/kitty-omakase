@@ -30,6 +30,10 @@ class Item extends Group {
     return;
   }
 
+  delete() {
+    this.parent?.removeFromUpdateList?.(this);
+    this.parent?.remove?.(this);
+  }
 
   update(timeStamp) {
     if (!this.isHeld) {

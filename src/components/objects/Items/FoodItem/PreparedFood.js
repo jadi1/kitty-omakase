@@ -12,17 +12,39 @@ class PreparedFood extends FoodItem {
     this.model = null;
 
     this.loadMesh(name);
+    console.log(this);
   }
 
   trash() {
-    if (this.heldBy) {
-      this.heldBy.heldObject = null;
-    }
-    removeMesh(this.model);
+    super.trash();
   }
 
   // figures out what mesh to load based on name
   loadMesh(name) {
+    // if there is already a mesh, remove it
+    if (this.model) {
+      this.remove(this.model);
+      this.model = null;
+    }
+    console.log("new mesh name: ", name);
+
+    const master = masterMeshes[name];
+    if (!master) {
+      console.warn("No master mesh for", name);
+      return false;
+    }
+
+    // clone synchronously
+    const instance = master.clone(true); // deep clone
+    instance.visible = true;
+    this.add(instance);
+    this.model = instance;
+    this.name = name;
+    return true;
+  }
+
+  // figures out what mesh to load based on name
+  changeMesh(name) {
     // check if same name
     if (name == this.name) {
       return true;
@@ -65,8 +87,12 @@ class PreparedFood extends FoodItem {
       return false; // just exit, nothing returned
     }
     object.trash(); // get rid of old object
-    this.loadMesh(combinedFoodName);
-    return true;
+    if (this.changeMesh(combinedFoodName)) {
+      return true;
+    } else {
+      console.log("ERROR IN LOADING MESH");
+      return false;
+    }
   }
 
 
