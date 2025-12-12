@@ -2,7 +2,6 @@ import { sharedLoader } from "../../../loader.js";
 import MODEL from "./rice.glb";
 import FoodItem from "../FoodItem";
 import { food } from "../../../../constants";
-import Pot from "../../Pot/Pot.js";
 
 class Rice extends FoodItem {
   constructor(parent, row = 0, col = 0) {
@@ -16,17 +15,18 @@ class Rice extends FoodItem {
     });
   }
 
-  prepare() {
-    if (!this.isPrepared) {
-      this.isPrepared = true;
+  // never gets called
+  // prepare() {
+  //   if (!this.isPrepared) {
+  //     this.isPrepared = true;
 
-      // switch models
-      if (!this.model || !this.choppedModel) return;
+  //     // switch models
+  //     if (!this.model || !this.choppedModel) return;
 
-      this.model.visible = false;
-      this.choppedModel.visible = true;
-    }
-  }
+  //     this.model.visible = false;
+  //     this.choppedModel.visible = true;
+  //   }
+  // }
 }
 
 export default Rice;

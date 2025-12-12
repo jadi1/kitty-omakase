@@ -192,11 +192,9 @@ class GameScene extends Scene {
         break;
       case "e":
         this.player.pickupDrop();
-        console.log("pickup/drop");
         break;
       case " ":
         this.player.interact();
-        console.log("space");
         break;
     }
   }

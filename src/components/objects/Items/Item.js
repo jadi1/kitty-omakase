@@ -14,14 +14,15 @@ class Item extends Group {
   }
 
   beGrabbed(player) {
-    console.log("be grabbed");
     this.isHeld = true;
     this.heldBy = player;
   }
 
-  beDropped() {
+  beDropped(targetRow, targetCol) {
     this.isHeld = false;
     this.heldBy = null;
+    this.row = targetRow;
+    this.col = targetCol;
   }
 
   trash() {
@@ -38,7 +39,7 @@ class Item extends Group {
       this.position.z = this.row * tileSize;
       this.position.x = this.col * tileSize;
 
-      // if on furniture, set y to furniture height (assumed 0 here)
+      // if on furniture, set y to furniture height
       if (this.parent && this.parent.state && this.parent.state.furnitureGrid) {
         const furniture = this.parent.state.furnitureGrid[this.row][this.col];
         if (furniture) {

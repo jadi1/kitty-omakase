@@ -1,7 +1,6 @@
 import { sharedLoader } from "../../../loader";
 import MODEL from "./ricenori.glb";
 import FoodItem from "../FoodItem";
-import { food } from "../../../../constants"
 
 class RiceNori extends FoodItem {
   constructor(parent, row = 0, col = 0) {
