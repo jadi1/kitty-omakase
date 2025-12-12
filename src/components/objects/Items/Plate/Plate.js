@@ -31,6 +31,25 @@ class Plate extends Item {
       return false;
     }
   }
+
+  // this deletion is causing some weird behavior
+  deliver(recipeList) {
+    const foodItemName = this.foodItem.name;
+    // console.log("recipeList before: ", recipeList);
+    for (const card of recipeList.cards) {
+      if (card.recipeName == foodItemName) {
+        console.log("foodItem? ", this.foodItem)
+        recipeList.repopulate(card);
+        // console.log("recipeList after: ", recipeList);
+        //recipeList.repopulate();
+        // causes an error when parent is null
+        // this.foodItem.delete();
+        // this.foodItem = null;
+        // this.delete()
+        break;
+      }
+    }
+  }
 }
 
 export default Plate;

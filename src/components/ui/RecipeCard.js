@@ -1,12 +1,15 @@
 import tunaImage from '../../assets/tuna-recipe-card.png';
 import salmonImage from '../../assets/salmon-recipe-card.png';
+import { food } from "../constants"
 
 const recipes = {
   tuna: {
+    recipeName: food.TUNASUSHI,
     ingredients: ["tuna", "rice", "nori"],
     cardImg: tunaImage,
   },
   salmon: {
+    recipeName: food.SALMONSUSHI,
     ingredients: ["salmon", "rice", "nori"],
     cardImg: salmonImage,
   }
@@ -24,11 +27,11 @@ class RecipeCard {
         this.foodLabel = foodLabel;
         this.ingredients = recipeData.ingredients;
         this.cardImg = recipeData.cardImg;
+        this.recipeName = recipeData.recipeName;
         this._build();
     }
     _build() {
         // Card container
-        console.log("building")
         this.container = document.createElement("div");
             Object.assign(this.container.style, {
             display: "inline-block",
@@ -54,7 +57,6 @@ class RecipeCard {
     
     // Append card to a parent element
     appendTo(parentElement) {
-        console.log('appendTo called', parentElement, "this", this.container);
         if (parentElement && this.container) {
             parentElement.appendChild(this.container);
         }
