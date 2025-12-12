@@ -1,5 +1,3 @@
-import { exp } from "three/tsl";
-
 export * from "./Cabinet";
 export * from "./Trash";
 export * from "./Table";
