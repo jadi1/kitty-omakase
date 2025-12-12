@@ -8,7 +8,6 @@ class Rice extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
     this.name = food.RICE;
-    this.contains.push(food.RICE);
 
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
@@ -18,16 +17,14 @@ class Rice extends FoodItem {
   }
 
   prepare() {
-    this.isPrepared = true;
-  }
+    if (!this.isPrepared) {
+      this.isPrepared = true;
 
-  update(timeStamp) {
-    super.update(timeStamp);
-    if (this.model == null) return;
-    if (this.heldBy && this.heldBy instanceof Pot) {
+      // switch models
+      if (!this.model || !this.choppedModel) return;
+
       this.model.visible = false;
-    } else {
-      this.model.visible = true;
+      this.choppedModel.visible = true;
     }
   }
 }

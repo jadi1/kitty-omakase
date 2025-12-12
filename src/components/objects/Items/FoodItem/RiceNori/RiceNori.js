@@ -6,9 +6,6 @@ import { food } from "../../../../constants"
 class RiceNori extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
-;
-    this.contains.push(food.NORI);
-    this.contains.push(food.RICE);
     
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);

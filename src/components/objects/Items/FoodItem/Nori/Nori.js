@@ -9,7 +9,6 @@ class Nori extends FoodItem {
 
     this.name = food.NORI;
     this.isPrepared = true;
-    this.contains.push(food.NORI);
 
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);

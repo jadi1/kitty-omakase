@@ -8,6 +8,7 @@ import Trash from "../KitchenFurniture/Trash/Trash";
 import Pot from "../Items/Pot/Pot";
 import Plate from "../Items/Plate/Plate";
 import FoodItem from "../Items/FoodItem/FoodItem";
+import { removeMesh } from "../../removeMesh";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -256,8 +257,11 @@ class ToonCat extends Group {
           console.log("Placing food onto plate");
           const success = held.receiveObject(item);
           if (success) {
+            removeMesh(held);
             console.log("successfully placed food on plate");
           }
+          // stop tracking the item on grid
+          this.parent.state.itemGrid[targetRow][targetCol] = null;
         }
       } else if (item instanceof Pot) {
         console.log("Placing item into pot");
@@ -271,8 +275,9 @@ class ToonCat extends Group {
         console.log("Placing food onto plate");
         const success = item.receiveObject(held);
         if (success) {
+          // remove food item, its all considered part of plate now
+          removeMesh(held);
           this.heldObject = null;
-          held.beGrabbed(item);
           console.log("successfully placed food on plate");
         }
       }

@@ -26,19 +26,14 @@ class Salmon extends FoodItem {
   }
 
   prepare() {
-    this.isPrepared = true;
-    // change model
-  }
+    if (!this.isPrepared) {
+      this.isPrepared = true;
 
-  update(timeStamp) {
-    super.update(timeStamp);
-    if (!this.model || !this.choppedModel) return;
-    if (this.isPrepared) {
-      this.choppedModel.visible = true;
+      // switch models
+      if (!this.model || !this.choppedModel) return;
+
       this.model.visible = false;
-    } else {
-      this.choppedModel.visible = false;
-      this.model.visible = true;
+      this.choppedModel.visible = true;
     }
   }
 }
