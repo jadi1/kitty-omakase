@@ -211,6 +211,7 @@ class ToonCat extends Group {
     console.log("drop");
 
     const { targetRow, targetCol } = this.getTargetCell();
+    const held = this.heldObject;
 
     // trash
     console.log(this.parent.state.itemGrid);
@@ -219,9 +220,7 @@ class ToonCat extends Group {
       this.parent.state.furnitureGrid[targetRow][targetCol] instanceof Trash
     ) {
       console.log("Trashing item");
-
-      const item = this.heldObject;
-      item.trash();
+      held.trash();
       return;
     }
 
@@ -231,28 +230,36 @@ class ToonCat extends Group {
       // drop if the target cell is empty
       console.log("Dropping item");
 
-      const item = this.heldObject;
-      this.parent.state.itemGrid[targetRow][targetCol] = item;
-      item.row = targetRow;
-      item.col = targetCol;
-      console.log(item);
+      this.parent.state.itemGrid[targetRow][targetCol] = held;
+      held.row = targetRow;
+      held.col = targetCol;
+      console.log(held);
 
-      item.beDropped();
-
+      held.beDropped();
       this.heldObject = null;
     } else {
       if (item instanceof FoodItem) {
         // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
         // if you/item are holding plate and prepared food, combine them
+        if (held instanceof Pot) {
+          console.log("Placing pot onto item");
+          const success = held.receiveObject(item);
+          if (success) {
+            this.parent.state.itemGrid[targetRow][targetCol] = held;
+            held.row = targetRow;
+            held.col = targetCol;
+
+            item.beGrabbed(held);
+            held.beDropped();
+            this.heldObject = null;
+          }
+        }
       } else if (item instanceof Pot) {
         console.log("Placing item into pot");
-        const held = this.heldObject;
-        const pot = this.parent.state.itemGrid[targetRow][targetCol];
-        const success = pot.receiveObject(held);
+        const success = item.receiveObject(held);
         if (success) {
           this.heldObject = null;
-          held.beGrabbed(pot);
-          held.prepare();
+          held.beGrabbed(item);
         }
       }
     }
