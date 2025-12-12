@@ -8,8 +8,6 @@ class Pot extends Item {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
     this.heldObject = null;
-    this.emptyMesh = null;
-    this.riceMesh = null;
 
     this.name = "pot";
     sharedLoader.load(EMPTY_MODEL, (gltf) => {

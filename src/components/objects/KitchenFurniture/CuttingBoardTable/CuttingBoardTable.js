@@ -2,6 +2,7 @@ import { sharedLoader } from "../../loader";
 import MODEL from "./cutting_board_table.glb";
 import KitchenFurniture from "../KitchenFurniture";
 import Salmon from "../../Items/FoodItem/Salmon/Salmon";
+import Tuna from "../../Items/FoodItem/Tuna/Tuna";
 
 class CuttingBoardTable extends KitchenFurniture {
   constructor(parent, row = 0, col = 0) {
@@ -18,9 +19,8 @@ class CuttingBoardTable extends KitchenFurniture {
 
   interact(player) {
     const item = this.parent.state.itemGrid[this.row][this.col];
-    if (item && item instanceof Salmon) {
+    if (item && (item instanceof Salmon || item instanceof Tuna)) {
       item.prepare();
-      console.log("Salmon prepared on cutting board table");
     }
   }
 }

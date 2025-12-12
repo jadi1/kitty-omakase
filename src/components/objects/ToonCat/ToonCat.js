@@ -6,8 +6,7 @@ import { facings } from "../../constants";
 import IngredientBin from "../KitchenFurniture/IngredientBin/IngredientBin";
 import Trash from "../KitchenFurniture/Trash/Trash";
 import Pot from "../Items/Pot/Pot";
-import Trash from "../KitchenFurniture/Trash/Trash";
-import Pot from "../Items/Pot/Pot";
+import FoodItem from "../Items/FoodItem/FoodItem";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -213,6 +212,7 @@ class ToonCat extends Group {
 
     const { targetRow, targetCol } = this.getTargetCell();
 
+    // trash
     console.log(this.parent.state.itemGrid);
     if (
       this.parent.state.furnitureGrid[targetRow][targetCol] &&
@@ -226,10 +226,9 @@ class ToonCat extends Group {
     }
 
     // Only drop if the target cell is empty
-    if (this.parent.state.itemGrid[targetRow][targetCol] == null) {
     const item = this.parent.state.itemGrid[targetRow][targetCol];
-    // drop if the target cell is empty
     if (item == null) {
+      // drop if the target cell is empty
       console.log("Dropping item");
 
       const item = this.heldObject;
@@ -241,19 +240,20 @@ class ToonCat extends Group {
       item.beDropped();
 
       this.heldObject = null;
-    } else if (item instanceof FoodItem) {
-      // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
-      // if you/item are holding plate and prepared food, combine them
-    } else if (
-      this.parent.state.itemGrid[targetRow][targetCol] &&
-      this.parent.state.itemGrid[targetRow][targetCol] instanceof Pot
-    ) {
-      const item = this.heldObject;
-      const pot = this.parent.state.itemGrid[targetRow][targetCol];
-      const success = pot.receiveObject(item);
-      if (success) {
-        this.heldObject = null;
-        item.beGrabbed(pot);
+    } else {
+      if (item instanceof FoodItem) {
+        // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
+        // if you/item are holding plate and prepared food, combine them
+      } else if (item instanceof Pot) {
+        console.log("Placing item into pot");
+        const held = this.heldObject;
+        const pot = this.parent.state.itemGrid[targetRow][targetCol];
+        const success = pot.receiveObject(held);
+        if (success) {
+          this.heldObject = null;
+          held.beGrabbed(pot);
+          held.prepare();
+        }
       }
     }
   }

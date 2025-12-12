@@ -2,6 +2,7 @@ import KitchenFurniture from "../KitchenFurniture";
 import Rice from "../../Items/FoodItem/Rice/Rice";
 import Salmon from "../../Items/FoodItem/Salmon/Salmon";
 import Nori from "../../Items/FoodItem/Nori/Nori";
+import Tuna from "../../Items/FoodItem/Tuna/Tuna";
 
 class IngredientBin extends KitchenFurniture {
   constructor(parent, row, col, food) {
@@ -24,10 +25,13 @@ class IngredientBin extends KitchenFurniture {
         foodItem = new Rice(this.parent, this.row, this.col);
         break;
       case "salmon":
-        foodItem = new Salmon(this.parent, this.row, this.col); 
+        foodItem = new Salmon(this.parent, this.row, this.col);
         break;
       case "nori":
         foodItem = new Nori(this.parent, this.row, this.col);
+        break;
+      case "tuna":
+        foodItem = new Tuna(this.parent, this.row, this.col);
         break;
       default:
         console.error("Unknown food type:", this.food);
