@@ -8,6 +8,7 @@ class Item extends Group {
     this.col = col;
     this.isHeld = false;
     this.heldBy = null;
+    this.name = "";
 
     parent.addToUpdateList(this);
     parent.add(this);
@@ -56,8 +57,12 @@ class Item extends Group {
       }
     } else if (this.heldBy) {
       this.position.z = this.heldBy.position.z;
-      this.position.y = this.heldBy.position.y + .7; // Slightly above the player
       this.position.x = this.heldBy.position.x;
+      if (this.heldBy.name == "plate") {
+        this.position.y = this.heldBy.position.y + .1; // slightly above plate
+      } else {
+        this.position.y = this.heldBy.position.y + .7;
+      }
     }
   }
 }

@@ -12,6 +12,7 @@ export const facings = Object.freeze({
 export const food = Object.freeze({
   SALMON: "salmon",
   RICE: "rice",
+  RICEPOT: "ricepot",
   NORI: "nori",
   TUNA: "tuna",
   RICENORI: "ricenori",

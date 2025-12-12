@@ -3,6 +3,7 @@ import MODEL from "./nori.glb";
 import FoodItem from "../FoodItem";
 import { food } from "../../../../constants"
 
+// also never gets called?
 class Nori extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);

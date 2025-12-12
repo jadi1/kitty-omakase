@@ -3,6 +3,8 @@ import MODEL from "./cutting_board_table.glb";
 import KitchenFurniture from "../KitchenFurniture";
 import Salmon from "../../Items/FoodItem/Salmon/Salmon";
 import Tuna from "../../Items/FoodItem/Tuna/Tuna";
+import { food } from "../../../constants";
+import PreparedFood from "../../Items/FoodItem/PreparedFood";
 
 class CuttingBoardTable extends KitchenFurniture {
   constructor(parent, row = 0, col = 0) {
@@ -19,8 +21,14 @@ class CuttingBoardTable extends KitchenFurniture {
 
   interact(player) {
     const item = this.parent.state.itemGrid[this.row][this.col];
-    if (item && (item instanceof Salmon || item instanceof Tuna)) {
-      item.prepare();
+    if (item && item instanceof Salmon) {
+      const newFood = new PreparedFood(this.parent, this.row,this.col, food.SALMON);
+      this.parent.state.itemGrid[this.row][this.col] = newFood;
+      item.trash();
+    } else if (item && item instanceof Tuna) {
+      const newFood = new PreparedFood(this.parent, this.row,this.col, food.TUNA);
+      this.parent.state.itemGrid[this.row][this.col] = newFood;
+      item.trash();
     }
   }
 }

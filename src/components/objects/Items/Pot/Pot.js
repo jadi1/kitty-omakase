@@ -8,7 +8,7 @@ class Pot extends Item {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
     this.heldObject = false; // pot can only hold rice, change to bool
-    this.isPrepared = true; // pot can only be prepared when rice is inside, start with false
+    this.isPrepared = false; // pot can only be prepared when rice is inside, start with false
 
     this.name = "pot";
     sharedLoader.load(EMPTY_MODEL, (gltf) => {
@@ -28,13 +28,11 @@ class Pot extends Item {
   receiveObject(object) {
     if (!this.heldObject && object instanceof Rice) {
       this.heldObject = true;
-      // this.isPrepared = true; // MUST CHANGE to check if its on a stove before toggling prepare
-      
+
       this.riceMesh.visible = true;
       this.emptyMesh.visible = false;
 
       object.trash(); // stop rendering the rice
-
       return true;
     } else {
       console.log("Pot already has an item.");
@@ -48,10 +46,10 @@ class Pot extends Item {
       console.log("Pot's held item trashed.");
       this.riceMesh.visible = false;
       this.emptyMesh.visible = true;
-      this.heldObject = false
+      this.heldObject = false;
+      this.isPrepared = false;
     }
     console.log(this);
-
   }
 }
 

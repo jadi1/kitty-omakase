@@ -8,6 +8,8 @@ import Trash from "../KitchenFurniture/Trash/Trash";
 import Pot from "../Items/Pot/Pot";
 import Plate from "../Items/Plate/Plate";
 import FoodItem from "../Items/FoodItem/FoodItem";
+import Stove from "../KitchenFurniture/Stove/Stove";
+import { PreparedFood } from "../Items/FoodItem";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -186,7 +188,6 @@ class ToonCat extends Group {
     const { targetRow, targetCol } = this.getTargetCell();
 
     // if an item exists
-    
     const item = this.parent.state.itemGrid[targetRow][targetCol];
     console.log(item);
 
@@ -211,18 +212,16 @@ class ToonCat extends Group {
     const { targetRow, targetCol } = this.getTargetCell();
     const held = this.heldObject;
 
-    // trash
-    console.log(this.parent.state.itemGrid);
-    if (
-      this.parent.state.furnitureGrid[targetRow][targetCol] &&
-      this.parent.state.furnitureGrid[targetRow][targetCol] instanceof Trash
-    ) {
-      console.log("Trashing item");
-      held.trash();
-      return;
+    // check kitchen furniture items
+    const furniture = this.parent.state.furnitureGrid[targetRow][targetCol];
+    if (furniture) {
+      if (furniture instanceof Trash) {
+        console.log("Trashing item");
+        held.trash();
+        return;
+      } 
     }
-
-    // everything else
+    // check for foods/plates/pots
     const item = this.parent.state.itemGrid[targetRow][targetCol];
     // regular drop: drop if the target cell is empty
     if (item == null) {
@@ -230,41 +229,108 @@ class ToonCat extends Group {
       held.beDropped(targetRow, targetCol);
       this.heldObject = null;
     } else { // special cases
-      // if target cell is a food item...
-      if (item instanceof FoodItem) {
-        // ...and you are holding a pot
-        if (held instanceof Pot) {
-          console.log("Placing pot onto item");
+      // if you are holding a pot
+      if (held instanceof Pot) {
+        console.log("Placing pot onto item");
+        if (item instanceof Plate || item instanceof PreparedFood) { // item is a plate
+          const success = item.receiveObject(held);
+          if (success) {
+            held.trash(); // empty pot
+          }
+        } else { // all other items
           const success = held.receiveObject(item);
           if (success) {
             this.parent.state.itemGrid[targetRow][targetCol] = held; // update item grid 
-            
             item.beGrabbed(held); // the item is grabbed by the pot
             held.beDropped(targetRow, targetCol); // you drop the pot
             this.heldObject = null; // no longer holding anything
           }
-        // ...and you are holding a plate
-        } else if (held instanceof Plate) {
-          // should be very similar to pot
-          // console.log("Pick up food with plate");
-          // const success = held.receiveObject(item);
-          // if (success) {
-          //   held.trash();
-          //   console.log("successfully placed food on plate");
-          // }
-          // // stop tracking the item on grid
-          // this.parent.state.itemGrid[targetRow][targetCol] = null;
         }
-      // or, target item is a pot
-      } else if (item instanceof Pot || item instanceof Plate) {
-        console.log("Placing item onto pot/plate");
-        const success = item.receiveObject(held);
-        if (success) {
-          item.beDropped(targetRow, targetCol);
-          this.heldObject = null; // you are no longer holding anything
+      // if you are holding a plate
+      } else if (held instanceof Plate) {
+        console.log("Picking up item with plate");
+        if (held.food != null) { // dump contents of plate onto food
+          if (typeof item.receiveObject === 'function') { // check if that function is valid
+            const success = item.receiveObject(held.food);
+            if (success) {
+              held.trash(); // empty plate
+            }
+          }
+        } else { // pick up contents with plate
+            const success = held.receiveObject(item);
+            if (success) {
+              item.trash(); // remove ingredients
+            }
+        }
+      // you are holding food
+      } else {
+        // you can try putting it in the plate/pot
+        if (item instanceof Pot && item.isPrepared == true) {
+          if (held instanceof PreparedFood) {
+            const success = held.receiveObject(item);
+            if (success) {
+              item.trash(); // empty pot
+            }
+          }
+        } else if(item instanceof Pot || item instanceof Plate) {
+          const success = item.receiveObject(held);
+          if (success) {
+            held.beGrabbed(item);
+            held.beDropped(targetRow, targetCol);
+            this.heldObject = null; // no longer holding anything
+          }
+        }
+        // if your food is prepared, you can try combining it with the item if its food
+        else if (item instanceof PreparedFood) {
+          const success = item.receiveObject(held);
+          if (success) {
+            held.beGrabbed(item);
+            held.beDropped(targetRow, targetCol);
+            this.heldObject = null; // no longer holding anything
+          }
         }
       }
+      // if target cell is a food item...
+      // if (item instanceof FoodItem || item instanceof Pot) {
+      //   // ...and you are holding a pot
+      //   if (held instanceof Pot) {
+      //     console.log("Placing pot onto item");
+      //     const success = held.receiveObject(item);
+      //     if (success) {
+      //       this.parent.state.itemGrid[targetRow][targetCol] = held; // update item grid 
+            
+      //       item.beGrabbed(held); // the item is grabbed by the pot
+      //       held.beDropped(targetRow, targetCol); // you drop the pot
+      //       this.heldObject = null; // no longer holding anything
+      //     }
+      //   // ...and you are holding a plate
+      //   } else if (held instanceof Plate) {
+      //     // should be very similar to pot
+      //     console.log("Pick up food with plate");
+      //     const success = held.receiveObject(item);
+      //     if (success) {
+      //       console.log("successfully placed food on plate");
+      //     }
+      //   }
+      // // or, target item is a pot / plate
+      // } else if (item instanceof Pot || item instanceof Plate) {
+      //   console.log("Placing item onto pot/plate");
+      //   const success = item.receiveObject(held);
+      //   if (success) {
+      //     item.beDropped(targetRow, targetCol);
+      //     if (item instanceof Plate && !(this.heldObject instanceof Pot)) {
+      //       this.heldObject = null; // you are no longer holding anything
+      //     }
+      //     console.log("SUCCESSFUL PLATE RECEIVING");
+      //   } else {
+      //     console.log("UNSUCCESSFUL PLATE RECIVING");
+      //   }
+      // }
     }
+    if (furniture && furniture instanceof Stove) {
+      furniture.interact();
+    }
+    
   }
 }
 

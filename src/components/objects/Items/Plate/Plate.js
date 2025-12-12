@@ -1,7 +1,8 @@
 import { sharedLoader } from "../../loader.js";
 import MODEL from "./plate.glb";
 import Item from "../Item";
-import FoodItem from "../Item"
+import PreparedFood from "../FoodItem/PreparedFood.js";
+import { removeMesh } from "../../../utils.js";
 
 class Plate extends Item {
   constructor(parent, row = 0, col = 0) {
@@ -14,31 +15,38 @@ class Plate extends Item {
       this.model.scale.set(0.5, 0.5, 0.5);
     });
 
-    this.foodMesh = null; // holds mesh of food
-    this.foodName= null; // holds reference to name food
+    this.food = null; // holds reference to food
+  }
+
+  trash() {
+    if (this.food) {
+      console.log("Plate's item trashed.");
+      removeMesh(this.food);
+      this.food = null;
+    }
   }
 
   receiveObject(object) {
-    // check if object is valid food item
-    // EVEN BETTER: CHECK IF ITS PREPARED FOOD ITEM
-    if (object instanceof FoodItem && object.isPrepared == true) {
-      // create new prepared food on plate and combine with object
-      newFood = new PreparedFood(this.parent, this.row, this.col, this.foodName)
-      newFood.combineFoods(object.name);
-      this.foodName = newFood.name;
+    console.log("plate is receiving object", object);
 
-      if (newFoodName != null) { // if valid new food name
-        this.loadFood(newFoodName);
-        this.foodItem = object;
-
-        object.trash(); // stop rendering the old food item(s)
-      } 
-      // console.log("PLATE CONTAINS:");
-      // console.log(this.foodName);
-      return true;
-    } else {
-      console.log("Invalid item. Food items must be prepared");
-      return false;
+    // if plate is empty
+    if (this.food == null) {
+      // create new preparedfood
+      const newFood = new PreparedFood(this.parent, this.row, this.col, "");
+      this.food = newFood;
+      this.food.beGrabbed(this);
+      const success = this.food.receiveObject(object); 
+      if (success) {
+        console.log("EXCELLENT");
+        object.trash(); // empty pot / clear food
+      }
+      return success;
+    } else { // plate already has food
+      const success = this.food.receiveObject(object);
+      if (success) {
+        object.trash(); // empty pot / clear food
+      }
+      return success;
     }
   }
 }
