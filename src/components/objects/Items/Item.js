@@ -42,9 +42,17 @@ class Item extends Group {
       if (this.parent && this.parent.state && this.parent.state.furnitureGrid) {
         const furniture = this.parent.state.furnitureGrid[this.row][this.col];
         if (furniture) {
-          this.position.y = 0.51; // Adjust based on furniture height if needed
+          if (furniture.name == "stove") {
+            console.log("stove found");
+            console.log(this.name);
+            this.position.y = .55; // Adjust based on stove height if needed
+          } else if (furniture.name == "cuttingboard") {
+            this.position.y = 0.58; // Adjust based on sink height if needed
+          } else {
+            this.position.y = 0.51; // Adjust based on furniture height if needed
+          }
         } else {
-          this.position.y = 0.1; // Ground level
+          this.position.y = .1; // Ground level
         }
       }
     } else if (this.heldBy) {

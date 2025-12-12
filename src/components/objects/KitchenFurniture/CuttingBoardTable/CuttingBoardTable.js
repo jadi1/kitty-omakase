@@ -9,7 +9,7 @@ class CuttingBoardTable extends KitchenFurniture {
     super(parent, row, col);
 
     // load specific model
-    this.name = "cabinet";
+    this.name = "cuttingboard";
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
       this.model = gltf.scene;
