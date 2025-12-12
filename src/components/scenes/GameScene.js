@@ -1,4 +1,4 @@
-import { Scene, Color } from "three";
+import { Scene, Color, BoxGeometry, MeshBasicMaterial, Mesh, BackSide, TextureLoader } from "three";
 import RecipeList from "../ui/RecipeList.js";
 import {
   Floor,
@@ -39,7 +39,29 @@ class GameScene extends Scene {
     };
 
     // Set background to a nice color
-    this.background = new Color(0x7ec0ee);
+    // this.background = new Color(0x7ec0ee);
+    const loader = new TextureLoader();
+    const wallColor = 0xAB6D41;
+    const floorColor = 0xFFDB82;
+    const backWallColor = 0x73411F;
+
+    const materials = [
+      new MeshBasicMaterial({ color: wallColor, side: BackSide }), // left wall. try with image, map: loader.load('./jwall.jpg')
+      new MeshBasicMaterial({ color: wallColor, side: BackSide }), // right wall
+      new MeshBasicMaterial({ color: wallColor, side: BackSide }), // top wall  
+      new MeshBasicMaterial({ color: floorColor, side: BackSide }), // floor
+      new MeshBasicMaterial({ color: wallColor, side: BackSide }), // front wall
+      new MeshBasicMaterial({ color: backWallColor, side: BackSide })  // back wall
+    ];
+
+    const skyboxGeometry = new BoxGeometry(14, 21, 10); // xzy
+    const skybox = new Mesh(skyboxGeometry, materials);
+    
+    // Center the skybox around your scene
+    skybox.position.set((numCols - 1) / 2, 10, (numRows - 1) / 2 + 1);
+    
+    this.add(skybox);
+    
 
     // Add meshes to scene
     this.player = new ToonCat(this, 1, 1);
