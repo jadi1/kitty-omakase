@@ -16,6 +16,11 @@ class Salmon extends FoodItem {
       this.model.scale.set(0.1, 0.1, 0.1);
     });
   }
+
+  prepare() {
+    this.isPrepared = true;
+    // change model
+  }
 }
 
 export default Salmon;
