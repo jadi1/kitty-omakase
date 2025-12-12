@@ -23,11 +23,11 @@ class CuttingBoardTable extends KitchenFurniture {
     const item = this.parent.state.itemGrid[this.row][this.col];
     if (item && item instanceof Salmon && item.isPrepared == false) {
       item.trash();
-      const newFood = new PreparedFood(this.parent, this.row,this.col, food.SALMON);
+      const newFood = new PreparedFood(this.parent, this.row,this.col, food.CHOPPEDSALMON);
       this.parent.state.itemGrid[this.row][this.col] = newFood;
     } else if (item && item instanceof Tuna && item.isPrepared == false) {
       item.trash();
-      const newFood = new PreparedFood(this.parent, this.row,this.col, food.TUNA);
+      const newFood = new PreparedFood(this.parent, this.row,this.col, food.CHOPPEDTUNA);
       this.parent.state.itemGrid[this.row][this.col] = newFood;
     }
   }

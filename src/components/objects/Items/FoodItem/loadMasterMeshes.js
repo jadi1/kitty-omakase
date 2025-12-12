@@ -15,15 +15,15 @@ import TUNASUSHI from "./TunaSushi/tunasushi.glb";
 const masterMeshesData = [
   { name: "rice", path: RICE, scale: 0.25 },
   { name: "nori", path: NORI, scale: 0.25 },
-  { name: "salmon", path: SALMON, scale: 0.15 },
-  { name: "tuna", path: TUNA, scale: 0.15 },
+  { name: "choppedsalmon", path: SALMON, scale: 0.25 },
+  { name: "choppedtuna", path: TUNA, scale: 0.25 },
   { name: "ricenori", path: RICENORI, scale: 0.25 },
   { name: "salmonnori", path: SALMONNORI, scale: 0.25 },
   { name: "salmonrice", path: SALMONRICE, scale: 0.25 },
   { name: "tunanori", path: TUNANORI, scale: 0.25 },
   { name: "tunarice", path: TUNARICE, scale: 0.25 },
-  { name: "salmonsushi", path: SALMONSUSHI, scale: 0.15 },
-  { name: "tunasushi", path: TUNASUSHI, scale: 0.15 },
+  { name: "salmonsushi", path: SALMONSUSHI, scale: 0.12 },
+  { name: "tunasushi", path: TUNASUSHI, scale: 0.12 },
 ];
 
 const masterMeshes = {};

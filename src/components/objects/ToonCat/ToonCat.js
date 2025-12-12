@@ -249,31 +249,32 @@ class ToonCat extends Group {
       // if you are holding a plate
       } else if (held instanceof Plate) {
         console.log("Picking up item with plate");
-        if (held.food == null) {
+        // if placing down onto a pot, attempt to pick up rice from pot
+        if (item instanceof Pot) {
           const success = held.receiveObject(item);
           if (success) {
             item.trash(); // remove ingredients
           }
-        } else { // plate is not empty
-          if (typeof item.receiveObject === 'function') { // check if that function is valid
-            const success = held.receiveObject(item);
-            if (success) {
-              item.trash(); // empty pot /remove ingredients
-            }
+        } else { // otherwise, place plate down on the food
+          const success = held.receiveObject(item);
+          if (success) {
+            held.beDropped(targetRow, targetCol); // you drop the plate onto food
+            this.parent.state.itemGrid[targetRow][targetCol] = held; // update item grid 
+            this.heldObject = null ; // EDGE CASE TO ADD: if the item is also a food, you want to hold plate
           }
         }
-        // if (held.food != null) { // dump contents of plate onto food
-        //   if (typeof item.receiveObject === 'function') { // check if that function is valid
-        //     const success = item.receiveObject(held.food);
-        //     if (success) {
-        //       held.trash(); // empty plate
-        //     }
+        // if (held.food == null) {
+        //   const success = held.receiveObject(item);
+        //   if (success) {
+        //     item.trash(); // remove ingredients
         //   }
-        // } else { // pick up contents with plate
+        // } else { // plate is not empty
+        //   if (typeof item.receiveObject === 'function') { // check if that function is valid
         //     const success = held.receiveObject(item);
         //     if (success) {
-        //       item.trash(); // remove ingredients
+        //       item.trash(); // empty pot /remove ingredients
         //     }
+        //   }
         // }
       // you are holding food
       } else {

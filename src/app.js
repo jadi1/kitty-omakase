@@ -11,6 +11,7 @@ import { WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
 import { GameScene } from "scenes";
 import { numRows, numCols } from "./components/constants";
 import { loadAllMasterMeshes } from "./components/objects/Items/FoodItem/loadMasterMeshes";
+import * as THREE from 'three';
 
 async function startGame() {
   // load all meshes 
@@ -20,12 +21,13 @@ async function startGame() {
   const scene = new GameScene();
   const camera = new PerspectiveCamera();
   const renderer = new WebGLRenderer({ antialias: true });
-
+  
   // Set up camera
   camera.position.set((numCols - 1) / 2, 10, numRows - 1);
 
   // Set up renderer, canvas, and minor CSS adjustments
   renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.outputEncoding = THREE.sRGBEncoding;
   const canvas = renderer.domElement;
   canvas.style.display = "block"; // Removes padding below canvas
   document.body.style.margin = 0; // Removes margin around page

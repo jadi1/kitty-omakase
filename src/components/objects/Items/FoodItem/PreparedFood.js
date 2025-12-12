@@ -1,6 +1,5 @@
 import { masterMeshes } from "./loadMasterMeshes.js";
 import FoodItem from "./FoodItem.js";
-import { removeMesh } from "../../../utils.js";
 import { food } from "../../../constants.js";
 import Pot from "../Pot/Pot.js";
 
@@ -76,7 +75,7 @@ class PreparedFood extends FoodItem {
     let newFoodName;
     if (object instanceof Pot && object.isPrepared == true) {
       newFoodName = food.RICE;
-    } else {
+    } else if (object instanceof PreparedFood) {
       newFoodName = object.name;
     }
     console.log(this.name, newFoodName);
@@ -86,6 +85,7 @@ class PreparedFood extends FoodItem {
       console.log("FAILED NAME");
       return false; // just exit, nothing returned
     }
+    // otherwise, new combo succeeds
     object.trash(); // get rid of old object
     if (this.changeMesh(combinedFoodName)) {
       return true;
@@ -105,17 +105,17 @@ class PreparedFood extends FoodItem {
 
     if ((food1 == food.RICE && food2 == food.NORI) || (food1 == food.NORI && food2 == food.RICE)) {
       return food.RICENORI;
-    } else if ((food1 == food.RICE && food2 == food.TUNA) || (food1 == food.TUNA && food2 == food.RICE)) {
+    } else if ((food1 == food.RICE && food2 == food.CHOPPEDTUNA) || (food1 == food.CHOPPEDTUNA && food2 == food.RICE)) {
       return food.TUNARICE;
-    } else if ((food1 == food.NORI && food2 == food.TUNA) || (food1 == food.TUNA && food2 == food.NORI)) {
+    } else if ((food1 == food.NORI && food2 == food.CHOPPEDTUNA) || (food1 == food.CHOPPEDTUNA && food2 == food.NORI)) {
       return food.TUNANORI;
-    } else if ((food1 == food.RICE && food2 == food.SALMON) || (food1 == food.SALMON && food2 == food.RICE)) {
+    } else if ((food1 == food.RICE && food2 == food.CHOPPEDSALMON) || (food1 == food.CHOPPEDSALMON && food2 == food.RICE)) {
       return food.SALMONRICE;
-    } else if ((food1 == food.NORI && food2 == food.SALMON) || (food1 == food.SALMON && food2 == food.NORI)) {
+    } else if ((food1 == food.NORI && food2 == food.CHOPPEDSALMON) || (food1 == food.CHOPPEDSALMON && food2 == food.NORI)) {
       return food.SALMONNORI;
-    } else if ((food1 == food.TUNA && food2 == food.RICENORI) || (food1 == food.RICENORI && food2 == food.TUNA)) {
+    } else if ((food1 == food.CHOPPEDTUNA && food2 == food.RICENORI) || (food1 == food.RICENORI && food2 == food.CHOPPEDTUNA)) {
       return food.TUNASUSHI;
-    } else if ((food1 == food.SALMON && food2 == food.RICENORI) || (food1 == food.RICENORI && food2 == food.SALMON)) {
+    } else if ((food1 == food.CHOPPEDSALMON && food2 == food.RICENORI) || (food1 == food.RICENORI && food2 == food.CHOPPEDSALMON)) {
       return food.SALMONSUSHI;
     } else if ((food1 == food.NORI && food2 == food.TUNARICE) || (food1 == food.TUNARICE && food2 == food.NORI)) {
       return food.TUNASUSHI;
