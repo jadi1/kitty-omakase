@@ -70,9 +70,6 @@ class ToonCat extends Group {
     // Checks the furniture grid first
 // if its chopping board, check the item grid to see if there’s food on it
 // If so, chopItem()
-// If its ingredient cabinet, check the item grid to see if there’s anything on it
-// If not, get ingredient cabinet.Food and set player.heldObject ot that food
-// If so, do nothing
 
   }
 
@@ -214,8 +211,9 @@ class ToonCat extends Group {
     const { targetRow, targetCol } = this.getTargetCell();
 
     console.log(this.parent.state.itemGrid);
-    // Only drop if the target cell is empty
-    if (this.parent.state.itemGrid[targetRow][targetCol] == null) {
+    const item = this.parent.state.itemGrid[targetRow][targetCol]
+    // drop if the target cell is empty
+    if (item == null) {
       console.log("Dropping item");
       
       const item = this.heldObject;
@@ -227,6 +225,10 @@ class ToonCat extends Group {
       item.beDropped();
 
       this.heldObject = null;
+    } else if (item instanceof FoodItem) {
+      // if target cell has a prepared food item and the item you're currently holding is. food, combine them !
+
+      // if you/item are holding plate and prepared food, combine them
     }
   }
 }

@@ -1,15 +1,15 @@
-import { sharedLoader } from "../../../loader.js";
-import MODEL from "./rice.glb";
+import { sharedLoader } from "../../../loader";
+import MODEL from "./ricenori.glb";
 import FoodItem from "../FoodItem";
 import { food } from "../../../../constants"
 
-class Rice extends FoodItem {
+class RiceNori extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
-
-    this.name = food.RICE;
+;
+    this.contains.push(food.NORI);
     this.contains.push(food.RICE);
-
+    
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
       this.model = gltf.scene;
@@ -18,4 +18,4 @@ class Rice extends FoodItem {
   }
 }
 
-export default Rice;
+export default RiceNori;
