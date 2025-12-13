@@ -1,6 +1,7 @@
 export default class RulesModal {
   constructor() {
     this._build();
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   _build() {
@@ -64,7 +65,7 @@ export default class RulesModal {
 
     // Close button
     this.closeBtn = document.createElement("button");
-    this.closeBtn.textContent = "CLOSE";
+    this.closeBtn.textContent = "Close";
     Object.assign(this.closeBtn.style, {
       marginTop: "12px",
       padding: "8px 12px",
@@ -75,7 +76,8 @@ export default class RulesModal {
       color: "#fff",
       cursor: "pointer",
       height: "50%",
-      width: "150px"
+      width: "150px",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.3)"
     });
     this.closeBtn.addEventListener("click", () => this.hide());
 
@@ -88,16 +90,29 @@ export default class RulesModal {
     document.body.appendChild(this.modal);
   }
 
+  handleKeyDown(event) {
+    if (event.key === "Escape" && this.modal.style.display === "flex") {
+      this.hide();
+    }
+  }
+
   show() {
-    if (this.modal) this.modal.style.display = "flex";
+    if (this.modal) {
+      this.modal.style.display = "flex";
+      document.addEventListener("keydown", this.handleKeyDown);
+    }
   }
 
   hide() {
-    if (this.modal) this.modal.style.display = "none";
+    if (this.modal) {
+      this.modal.style.display = "none";
+      document.removeEventListener("keydown", this.handleKeyDown);
+    }
   }
 
   destroy() {
     this.closeBtn.removeEventListener("click", this.hide);
+    document.removeEventListener("keydown", this.handleKeyDown);
     if (this.modal && this.modal.parentNode) {
       this.modal.parentNode.removeChild(this.modal);
     }

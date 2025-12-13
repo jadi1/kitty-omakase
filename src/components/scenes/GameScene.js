@@ -39,7 +39,7 @@ class GameScene extends Scene {
     // Call parent Scene() constructor
     super();
 
-    this.onQuit = onQuit; // TODO
+    this.onQuit = onQuit;
     this.isPaused = false;
     this.isMuted = false;
 
