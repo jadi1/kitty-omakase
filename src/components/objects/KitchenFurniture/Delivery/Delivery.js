@@ -28,12 +28,14 @@ class Delivery extends KitchenFurniture {
     // check if it matches any of the recipes, then delete the contents + plate
     for (const card of this.parent.recipeList.cards) {
       if (card.recipeName == foodName) {
+        this.parent.recipeList.pulseGreen(card);
         this.parent.recipeList.repopulate(card);
         object.food.trash();
         object.delete();
         return true; // successful delivery, throw out contents
       }
     }
+    this.parent.recipeList.pulseAllRed();
     object.food.trash();
     object.delete();
     return false; // bad delivery, still throw out contents

@@ -36,7 +36,6 @@ export default class RecipeList {
     //TODO: repopulation logic
     this.cards = [
       new RecipeCard(this.getRandomRecipe()),
-      new RecipeCard(this.getRandomRecipe()),
       new RecipeCard(this.getRandomRecipe())
     ];
 
@@ -47,19 +46,32 @@ export default class RecipeList {
   repopulate(oldCard) {
     // remove old card from list
 		const index = this.cards.indexOf(oldCard);
-		setTimeout(() => {
-			oldCard.destroy();
-		}, 500);
 		// remove this card and shift all the cards forward
 		if (index > -1) {
-			this.cards.splice(index, 1);
-		}
-		// create a new card and add to the end of the list with some delay
-		setTimeout(() => {
-			const newCard = new RecipeCard(this.getRandomRecipe());
-			this.cards.push(newCard);
-			newCard.appendTo(this.cardsWrapper);
-		}, 2000);
+      oldCard.pulseGreen();
+      // Wait for the pulse animation to finish before destroying
+      setTimeout(() => {
+        oldCard.destroy();
+        this.cards.splice(index, 1);
+      })
+      // create a new card and add to the end of the list with some delay
+      setTimeout(() => {
+        const newCard = new RecipeCard(this.getRandomRecipe());
+        this.cards.push(newCard);
+        newCard.appendTo(this.cardsWrapper);
+      }, 7000);
+      return;
+    }
+  }
+
+  pulseAllRed() {
+    // none of the cards were correct, so pulse red.
+    for (const card of this.cards) {
+      card.pulseRed();
+    }
+  }
+  pulseGreen(card) {
+    card.pulseGreen();
   }
 
   show() {
