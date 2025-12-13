@@ -8,7 +8,7 @@
  */
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
-import { GameScene } from "scenes";
+import { GameScene, WelcomeScene } from "scenes";
 import { numRows, numCols } from "./components/constants";
 import { loadAllMasterMeshes } from "./components/objects/Items/FoodItem/loadMasterMeshes";
 import * as THREE from 'three';
@@ -18,7 +18,13 @@ async function startGame() {
   await loadAllMasterMeshes();
 
   // Initialize core ThreeJS components
-  const scene = new GameScene();
+  // const scene = new GameScene();
+  let currentScene = new WelcomeScene({
+    onStart: () => {
+      currentScene.destroy();
+      currentScene = new GameScene();
+    }
+  });
   const camera = new PerspectiveCamera();
   const renderer = new WebGLRenderer({ antialias: true });
   
@@ -46,8 +52,8 @@ async function startGame() {
   // Render loop
   const onAnimationFrameHandler = (timeStamp) => {
     controls.update();
-    renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
+    renderer.render(currentScene, camera);
+    currentScene.update && currentScene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
   };
   window.requestAnimationFrame(onAnimationFrameHandler);
@@ -61,7 +67,7 @@ async function startGame() {
   };
   windowResizeHandler();
   window.addEventListener("resize", windowResizeHandler, false);
-  window.addEventListener("keydown", scene.handleKeyDown);
-  window.addEventListener("keyup", scene.handleKeyUp);
+  window.addEventListener("keydown", (e) => currentScene && currentScene.handleKeyDown && currentScene.handleKeyDown(e));
+  window.addEventListener("keyup", (e) => currentScene && currentScene.handleKeyUp && currentScene.handleKeyUp(e));
 }
 await startGame();
