@@ -19,39 +19,30 @@ class ToonCat extends Group {
     this.parent = parent;
 
     // Init state
-    this.row = row;
-    this.col = col;
-    this.facing = facings.DOWN;
+    this.xpos = row;
+    this.zpos = col;
+    // this.facing = facings.DOWN;
     this.heldObject = null;
     this.isAnimating = false;
-
+    this.rotationAngle = 0;
+    
     // Load object
     this.name = "cat";
     sharedLoader.load(MODEL, (gltf) => {
-      this.add(gltf.scene);
+      this.mesh = gltf.scene;
+      this.mesh.scale.set(0.0022,0.0022, 0.0022);
+      this.add(this.mesh);
 
-      this.model = gltf.scene;
-
-      // setting up animation mixer
-      if (gltf.animations && gltf.animations.length > 0) {
-        this.mixer = new THREE.AnimationMixer(this.model);
-        this.animations = {};
-
-        // Store all animations by name
-        gltf.animations.forEach((clip) => {
-          console.log("Animation found:", clip.name);
-          this.animations[clip.name] = this.mixer.clipAction(clip);
-          // by default, don't play the animation
-          this.action = this.mixer.clipAction(gltf.animations[0]);
-          this.action.stop();
-        });
-      }
-
-      window.addEventListener("keydown", (e) => this.handleKeyDown(e));
-      window.addEventListener("keyup", (e) => this.handleKeyUp(e));
-      // cat scale
-      this.model.scale.set(0.001, 0.001, 0.001);
-    });
+      // Pick the mesh that matters (ignore armature helpers)
+      let mainMesh = null;
+      this.mesh.traverse((child) => {
+        if (child.isMesh && !["Cube", "Icosphere", "Object5"].includes(child.name)) {
+          mainMesh = child;
+        }
+      });
+      if (!mainMesh) return;
+   });
+   this.catRadius = 0.4;
 
     // Add self to parent's update list
     parent.addToUpdateList(this);
@@ -119,70 +110,68 @@ class ToonCat extends Group {
       this.mixer.update(delta);
     }
 
-    this.position.z = this.row * 1;
-    this.position.x = this.col * 1;
-    this.rotation.y = (this.facing * Math.PI) / 2;
+    this.position.z = this.zpos;
+    this.position.x = this.xpos;
+    this.rotation.y = this.rotationAngle;
   }
 
-  move(direction) {
-    if (direction === "forward") {
-      this.facing = facings.UP;
-      if (
-        this.parent.state.furnitureGrid[this.row - 1][this.col] ||
-        this.parent.state.itemGrid[this.row - 1][this.col]
-      ) {
-        return;
-      }
-      this.row -= 1;
-    }
-    if (direction === "backward") {
-      this.facing = facings.DOWN;
-      if (
-        this.parent.state.furnitureGrid[this.row + 1][this.col] ||
-        this.parent.state.itemGrid[this.row + 1][this.col]
-      ) {
-        return;
-      }
-      this.row += 1;
-    }
-    if (direction === "left") {
-      this.facing = facings.LEFT;
-      if (
-        this.parent.state.furnitureGrid[this.row][this.col - 1] ||
-        this.parent.state.itemGrid[this.row][this.col - 1]
-      ) {
-        return;
-      }
-      this.col -= 1;
-    }
-    if (direction === "right") {
-      this.facing = facings.RIGHT;
-      if (
-        this.parent.state.furnitureGrid[this.row][this.col + 1] ||
-        this.parent.state.itemGrid[this.row][this.col + 1]
-      ) {
-        return;
-      }
-      this.col += 1;
-    }
-  }
+  move(moveX, moveZ, distance, worldBounds, obstacles) {
+    if (moveX === 0 && moveZ === 0) return;
 
+    // Normalize movement vector
+    const len = Math.hypot(moveX, moveZ);
+    moveX /= len;
+    moveZ /= len;
+
+    const newX = this.position.x + moveX * distance;
+    const newZ = this.position.z + moveZ * distance;
+
+    // check world bounds
+    if (newX - this.catRadius < worldBounds.minX || newX + this.catRadius > worldBounds.maxX) return;
+    if (newZ - this.catRadius < worldBounds.minZ || newZ + this.catRadius > worldBounds.maxZ) return;
+
+    for (const obs of obstacles) {
+      if (
+        newX + this.catRadius > obs.minX &&
+        newX - this.catRadius < obs.maxX &&
+        newZ + this.catRadius > obs.minZ &&
+        newZ - this.catRadius < obs.maxZ
+      ) {
+        return; // collision, cancel move
+      }
+    }
+
+    this.xpos = newX;
+    this.zpos = newZ;
+
+    // Update rotation only if moving
+    // if (moveX !== 0 || moveZ !== 0) {
+      this.rotationAngle = Math.atan2(moveX, moveZ);
+    // }
+  }
   getTargetCell() {
-    const facing = this.facing;
-    let targetRow = this.row;
-    let targetCol = this.col;
+    // Snap to nearest current cell
+    const currentRow = Math.round(this.zpos);
+    const currentCol = Math.round(this.xpos);
 
-    if (facing === facings.UP) {
-      targetRow -= 1;
-    } else if (facing === facings.DOWN) {
-      targetRow += 1;
-    } else if (facing === facings.LEFT) {
-      targetCol -= 1;
-    } else if (facing === facings.RIGHT) {
-      targetCol += 1;
-    }
+    // Compute direction vector from rotationAngle
+    const dxRaw = Math.sin(this.rotationAngle);
+    const dzRaw = Math.cos(this.rotationAngle);
+
+    // Apply deadzone to avoid accidental diagonals near cardinals
+    const deadzone = 0.3; // tweak between 0 and 1
+    let dx = 0, dz = 0;
+
+    if (Math.abs(dxRaw) > deadzone) dx = Math.sign(dxRaw);
+    if (Math.abs(dzRaw) > deadzone) dz = Math.sign(dzRaw);
+
+    // Compute target cell
+    const targetRow = currentRow + dz;
+    const targetCol = currentCol + dx;
+
     return { targetRow, targetCol };
-  }
+}
+
 
   pickUp() {
     console.log("pick up");
