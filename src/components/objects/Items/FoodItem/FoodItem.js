@@ -8,7 +8,6 @@ class FoodItem extends Item {
   }
 
   trash() {
-    super.delete();
     if (this.heldBy) {
       if (this.heldBy.name == "cat") {
         this.heldBy.heldObject = null;
@@ -16,6 +15,7 @@ class FoodItem extends Item {
         this.heldBy.food = null;
       }
     }
+    super.delete();
     removeMesh(this.mesh);
   }
 }

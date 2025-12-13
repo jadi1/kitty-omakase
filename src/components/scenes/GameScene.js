@@ -1,5 +1,6 @@
 import { Scene, Color, BoxGeometry, MeshBasicMaterial, Mesh, BackSide, TextureLoader } from "three";
 import RecipeList from "../ui/RecipeList.js";
+import ScoreLabel from "../ui/ScoreLabel.js";
 import PauseModal from "../ui/PauseModal.js";
 import RulesModal from "../ui/RulesModal.js";
 import MuteButton from "../ui/MuteButton.js";
@@ -20,7 +21,7 @@ import {
   TunaBin,
 } from "objects";
 import { BasicLights } from "lights";
-import { numRows, numCols, tileSize, food } from "../constants";
+import { numRows, numCols, PLATEGENERATOR} from "../constants";
 import * as THREE from "three";
 import bgMusic from '../../assets/background-music.mp3';
 
@@ -58,6 +59,8 @@ class GameScene extends Scene {
     }
 
     this.clock = new THREE.Clock();
+    this.score = new ScoreLabel();
+    this.score.show();
 
     // Init state
     this.state = {
@@ -142,8 +145,11 @@ class GameScene extends Scene {
       [" ", " ", " ", " ", " ", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
     ];
+    // hardcode plate generator table
     this.plateSpawnRow = 1;
     this.plateSpawnCol = 7;
+    this.state.furnitureGrid[this.plateSpawnRow][this.plateSpawnCol].name = PLATEGENERATOR;
+    
     this.populateItemGrid(initialItems);
 
     this.handleKeyDown = this.handleKeyDown.bind(this);

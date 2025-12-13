@@ -25,3 +25,7 @@ export const food = Object.freeze({
   SALMONRICE: "salmonrice",
   SALMONSUSHI: "salmonsushi"
 });
+
+export const pointsPerOrder = 50;
+export const pointsPerWrongOrder = 30;
+export const PLATEGENERATOR = "plategenerator";

@@ -11,8 +11,9 @@ class Item extends Group {
     this.name = "";
     this.parent = parent;
 
-    this.parent.addToUpdateList(this);
+    console.log(this);
     this.parent.add(this);
+    this.parent.addToUpdateList(this);
   }
 
   beGrabbed(player) {
