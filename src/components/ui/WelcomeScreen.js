@@ -57,43 +57,53 @@ export default class WelcomeScreen {
       bottom: "0", 
       left: "0", 
       width: "33%", 
-      height: "auto"
+      height: "auto",
+      marginTop: 100,
     });
 
     // Buttons container
     const btnRow = document.createElement("div");
     Object.assign(btnRow.style, {
       display: "flex",
-      gap: "10px",
+      gap: "5%",
       justifyContent: "center",
-      marginTop: "12px",
+      margin: "-8% 0 10% 0",
+      padding: "10px 0 20px 0",
+      backgroundColor: 'red',
+      height: '100%',
     });
 
     // Start button
     this.startBtn = document.createElement("button");
-    this.startBtn.textContent = "Start";
+    this.startBtn.textContent = "START";
     Object.assign(this.startBtn.style, {
       padding: "10px 16px",
-      borderRadius: "6px",
+      borderRadius: "10px",
       border: "none",
-      background: "#2b8aef",
+      background: "#ff751f",
       color: "#fff",
       cursor: "pointer",
-      fontSize: "14px",
+      fontSize: "100%",
+      fontWeight: "bold",
+      height: "50%",
+      width: "150px"
     });
     this.startBtn.addEventListener("click", () => this.onStart());
 
     // Rules button
     this.rulesBtn = document.createElement("button");
-    this.rulesBtn.textContent = "Rules";
+    this.rulesBtn.textContent = "RULES";
     Object.assign(this.rulesBtn.style, {
-      padding: "10px 16px",
-      borderRadius: "6px",
-      border: "1px solid #ccc",
-      background: "#fff",
-      color: "#333",
+      padding: "10px 0px",
+      borderRadius: "10px",
+      border: "none",
+      background: "#ff751f",
+      color: "#fff",
       cursor: "pointer",
-      fontSize: "14px",
+      fontSize: "100%",
+      fontWeight: "bold",
+      height: "50%",
+      width: "150px"
     });
     this.rulesBtn.addEventListener("click", () => this.onRules());
 
@@ -118,28 +128,42 @@ export default class WelcomeScreen {
     const rulesCard = document.createElement("div");
     Object.assign(rulesCard.style, {
       width: "520px",
-      maxHeight: "70vh",
+      maxHeight: "80vh",
       overflowY: "auto",
       padding: "20px",
       borderRadius: "8px",
       background: "#fff",
       boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
       color: "#111",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
     });
 
-    const rulesTitle = document.createElement("h2");
-    rulesTitle.textContent = "Rules";
-    Object.assign(rulesTitle.style, { marginTop: 0, fontSize: "18px" });
+    // const rulesTitle = document.createElement("h2");
+    // rulesTitle.textContent = "Rules";
+    // Object.assign(rulesTitle.style, { marginTop: 0, fontSize: "18px" });
+
+    const rulesTitle = document.createElement("img");
+    rulesTitle.src = "/rules-title-resize.png";
+    Object.assign(rulesTitle.style, { 
+      width: "33%", 
+      height: "auto",
+    });
 
     const rulesText = document.createElement("div");
     rulesText.innerHTML = `
-      <ol>
-        <li>Prepare orders by combining ingredients.</li>
-        <li>Serve customers before they get too impatient.</li>
-        <li>Manage inventory and kitchen stations.</li>
-      </ol>
+    <ul>
+        <li>Change directions using {W, A, S, D} or {↑, ↓, ←, →} </li>
+        <li>Press {e} to pick up or drop objects</li>
+        <li>To chop fish, press {spacebar} when the fish is on the cutting board</li>
+        <li>To cook rice, press {e} to place the rice in the pot. The rice is cooked automatically. Then press {e} again to place the rice on a plate.</li>
+        <li>To deliver an order, press {e} when next to the delivery station (top of kitchen). A dish can only be delivered if it contains all the necessary ingredients and is on a plate.</li>
+        <li>To trash a dish, press {e} next to the trash bin.</li>
+      </ul>
     `;
-    Object.assign(rulesText.style, { color: "#444", fontSize: "14px" });
+    Object.assign(rulesText.style, { color: "#444", fontSize: "100%", padding: "10px" });
 
     const closeRulesBtn = document.createElement("button");
     closeRulesBtn.textContent = "Close";
@@ -148,9 +172,12 @@ export default class WelcomeScreen {
       padding: "8px 12px",
       borderRadius: "6px",
       border: "none",
-      background: "#2b8aef",
+      background: "#ff751f",
+      fontWeight: "bold",
       color: "#fff",
       cursor: "pointer",
+      height: "50%",
+      width: "150px"
     });
     closeRulesBtn.addEventListener("click", () => this.closeRules());
 
