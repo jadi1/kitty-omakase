@@ -68,5 +68,35 @@ class RecipeCard {
             this.container.parentNode.removeChild(this.container);
         }
     }
+
+    pulseGreen() {
+        // Apply transition for smooth animation
+        this.container.style.transition = "transform 0.5s ease, box-shadow 0.5s ease";
+
+        // Scale up and add glow
+        this.container.style.transform = "scale(1.1)";
+        this.container.style.boxShadow = "0 0 20px rgba(76, 175, 80, 0.8)";
+
+        // After a short delay, scale back to normal
+        setTimeout(() => {
+            this.container.style.transform = "scale(1)";
+            this.container.style.boxShadow = "0 0 0px rgba(76, 175, 80, 0)";
+        }, 2000); // matches transition duration
+    }
+
+    pulseRed() {
+        // Apply transition for smooth animation
+        this.container.style.transition = "transform 0.5s ease, box-shadow 0.5s ease";
+
+        // Scale up and add glow
+        this.container.style.transform = "scale(1.1)";
+        this.container.style.boxShadow = "0 0 20px rgba(220, 0, 0, 0.8)";
+
+        // After a short delay, scale back to normal
+        setTimeout(() => {
+            this.container.style.transform = "scale(1)";
+            this.container.style.boxShadow = "0 0 0px rgba(76, 175, 80, 0)";
+        }, 200); // matches transition duration
+    }
 }
 export default RecipeCard;

@@ -32,7 +32,7 @@ const keys = {
   right: false,
 };
 
-const speed = 3;  // adjust as needed
+const speed = 5;  // adjust as needed
 
 class GameScene extends Scene {
   constructor(onQuit) {

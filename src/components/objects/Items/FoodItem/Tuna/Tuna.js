@@ -18,7 +18,7 @@ class Tuna extends FoodItem {
     // chopping state
     this.isBeingChopped = false;
     this.elapsedChopTime = 0;
-    this.totalChopTime = 3; // seconds
+    this.totalChopTime = 2; // seconds
     this.progressBar = null; // will be assigned
   }
 
