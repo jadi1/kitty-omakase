@@ -6,6 +6,7 @@ class KitchenFurniture extends Group {
     super();
     this.row = row;
     this.col = col;
+    this.model = null;
     parent.addToUpdateList(this);
     parent.add(this);
   }
