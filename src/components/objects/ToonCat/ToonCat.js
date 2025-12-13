@@ -29,18 +29,54 @@ class ToonCat extends Group {
     // Load object
     this.name = "cat";
     sharedLoader.load(MODEL, (gltf) => {
-      this.mesh = gltf.scene;
-      this.mesh.scale.set(0.0022,0.0022, 0.0022);
-      this.add(this.mesh);
+      this.model = gltf.scene;
+      this.model.scale.set(0.0022,0.0022, 0.0022);
+      this.add(this.model);
 
-      // Pick the mesh that matters (ignore armature helpers)
-      let mainMesh = null;
-      this.mesh.traverse((child) => {
-        if (child.isMesh && !["Cube", "Icosphere", "Object5"].includes(child.name)) {
-          mainMesh = child;
-        }
+      let skinnedMesh = null;
+      this.model.traverse((child) => {
+        if (child.isSkinnedMesh) skinnedMesh = child;
       });
-      if (!mainMesh) return;
+
+      if (!skinnedMesh) {
+        console.warn("No skinned mesh found in model!");
+        return;
+      }
+
+      if (gltf.animations.length && gltf.animations.length > 0) {
+        this.mixer = new THREE.AnimationMixer(skinnedMesh);
+        this.animations = {}
+
+        gltf.animations.forEach((clip) => {
+          console.log("Animation found:", clip.name);
+          this.animations[clip.name] = this.mixer.clipAction(clip);
+        });
+
+        // Default action
+        this.action = this.mixer.clipAction(gltf.animations[0]);
+        this.action.stop(); // don't play automatically
+      }
+
+      // // setting up animation mixer
+      // if (gltf.animations && gltf.animations.length > 0) {
+      //   this.mixer = new THREE.AnimationMixer(this.model);
+      //   this.animations = {};
+
+      //   // Store all animations by name
+      //   gltf.animations.forEach((clip) => {
+      //     console.log("Animation found:", clip.name);
+      //     this.animations[clip.name] = this.mixer.clipAction(clip);
+      //     // by default, don't play the animation
+      //     this.action = this.mixer.clipAction(gltf.animations[0]);
+      //     this.action.stop();
+      //   });
+
+      //   gltf.animations.forEach((clip) => {
+      //     console.log(clip.tracks.map(t => t.name));
+      //   });
+      // }
+      window.addEventListener("keydown", (e) => this.handleKeyDown(e));
+      window.addEventListener("keyup", (e) => this.handleKeyUp(e));
    });
    this.catRadius = 0.4;
 
