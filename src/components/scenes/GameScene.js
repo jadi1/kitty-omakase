@@ -2,6 +2,7 @@ import { Scene, Color, BoxGeometry, MeshBasicMaterial, Mesh, BackSide, TextureLo
 import RecipeList from "../ui/RecipeList.js";
 import PauseModal from "../ui/PauseModal.js";
 import RulesModal from "../ui/RulesModal.js";
+import MuteButton from "../ui/MuteButton.js";
 import {
   Floor,
   ToonCat,
@@ -38,6 +39,12 @@ class GameScene extends Scene {
 
     this.onQuit = onQuit; // TODO
     this.isPaused = false;
+    this.isMuted = false;
+
+    // init bg music
+    this.backgroundMusic = new Audio('/background-music.mp3'); // Replace with your audio file path
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.3;
 
     this.rows = numRows;
     this.cols = numCols;
@@ -103,6 +110,10 @@ class GameScene extends Scene {
       onQuit: () => this.handleQuit(),
       onPause: () => this.togglePause()
     });
+    this.muteButton = new MuteButton({
+      onToggleMute: (isMuted) => this.toggleMute(isMuted)
+    });
+    this.startMusic();
 
     // floor
     const floor = new Floor();
@@ -234,7 +245,33 @@ class GameScene extends Scene {
     keys.backward = false;
     keys.left = false;
     keys.right = false;
+    this.stopMusic();
     if (this.onQuit) this.onQuit();
+  }
+
+  startMusic() {
+    if (!this.isMuted) {
+      this.backgroundMusic.play().catch(error => {
+        console.log("Music autoplay prevented. User interaction required:", error);
+      });
+    }
+  }
+  stopMusic() {
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
+  }
+
+  toggleMute(isMuted) {
+    this.isMuted = isMuted;
+    if (this.isMuted) {
+      this.backgroundMusic.pause();
+    } else {
+      if (!this.isPaused) {
+        this.backgroundMusic.play().catch(error => {
+          console.log("Music play error:", error);
+        });
+      }
+    }
   }
   
   handleKeyDown(event) {
@@ -302,8 +339,14 @@ class GameScene extends Scene {
       keys.backward = false;
       keys.left = false;
       keys.right = false;
+      this.backgroundMusic.pause();
     } else {
       this.pauseModal.hide();
+      if (!this.isMuted) {
+        this.backgroundMusic.play().catch(error => {
+          console.log("Music play error:", error);
+        });
+      }
     }
   }
 
@@ -348,6 +391,11 @@ class GameScene extends Scene {
     if (this.pauseModal && typeof this.pauseModal.destroy === "function") {
       this.pauseModal.destroy();
     }
+    if (this.muteButton && typeof this.muteButton.destroy === "function") {
+      this.muteButton.destroy();
+    }
+    // Stop and cleanup music
+    this.stopMusic();
   }
 }
 
