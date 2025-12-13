@@ -22,7 +22,8 @@ async function startGame() {
   const renderer = new WebGLRenderer({ antialias: true });
   
   // Set up camera
-  camera.position.set((numCols - 1) / 2, 10, numRows - 1);
+  camera.position.set((numCols - 1) / 2, 7, numRows + 2);
+  camera.lookAt(new Vector3((numCols - 1) / 2, 0, (numRows - 1) / 2));
 
   // Set up renderer, canvas, and minor CSS adjustments
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -34,13 +35,13 @@ async function startGame() {
   document.body.appendChild(canvas);
 
   // Set up orbit controls
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true;
-  controls.enablePan = false;
-  controls.minDistance = 4;
-  controls.maxDistance = 16;
-  controls.target.set((numCols - 1) / 2, 0, (numRows - 1) / 2);
-  controls.update();
+  // const controls = new OrbitControls(camera, canvas);
+  // controls.enableDamping = true;
+  // controls.enablePan = false;
+  // controls.minDistance = 4;
+  // controls.maxDistance = 16;
+  // controls.target.set((numCols - 1) / 2, 0, (numRows - 1) / 2);
+  // controls.update();
 
   let currentScene;
 
@@ -65,7 +66,7 @@ async function startGame() {
   
   // Render loop
   const onAnimationFrameHandler = (timeStamp) => {
-    controls.update();
+    // controls.update();
     renderer.render(currentScene, camera);
     currentScene.update && currentScene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
