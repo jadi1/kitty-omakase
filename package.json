@@ -1,6 +1,7 @@
 {
-  "name": "lower-case-dashed-name-of-project",
-  "repository": "cos426finalproject",
+  "name": "kitty-omakase",
+  "repository": "kitty-omakase",
+  "homepage": "https://jadi1.github.io/kitty-omakase/",
   "version": "0.1.0",
   "title": "KITTY OMAKASE",
   "description": "You are an accomplished cat sushi chef. Can you make all the orders correctly?",

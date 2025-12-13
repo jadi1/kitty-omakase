@@ -1,6 +1,9 @@
 import { Scene, Color, BoxGeometry, MeshBasicMaterial, Mesh, BackSide, TextureLoader } from "three";
 import RecipeList from "../ui/RecipeList.js";
 import ScoreLabel from "../ui/ScoreLabel.js";
+import PauseModal from "../ui/PauseModal.js";
+import RulesModal from "../ui/RulesModal.js";
+import MuteButton from "../ui/MuteButton.js";
 import {
   Floor,
   ToonCat,
@@ -20,6 +23,7 @@ import {
 import { BasicLights } from "lights";
 import { numRows, numCols, PLATEGENERATOR} from "../constants";
 import * as THREE from "three";
+import bgMusic from '../../assets/background-music.mp3';
 
 const keys = {
   forward: false,
@@ -31,9 +35,18 @@ const keys = {
 const speed = 3;  // adjust as needed
 
 class GameScene extends Scene {
-  constructor() {
+  constructor(onQuit) {
     // Call parent Scene() constructor
     super();
+
+    this.onQuit = onQuit; // TODO
+    this.isPaused = false;
+    this.isMuted = false;
+
+    // init bg music
+    this.backgroundMusic = new Audio(bgMusic); // Replace with your audio file path
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.3;
 
     this.rows = numRows;
     this.cols = numCols;
@@ -44,7 +57,7 @@ class GameScene extends Scene {
       minZ: .5,
       maxZ: numRows - 1.5
     }
-   
+
     this.clock = new THREE.Clock();
     this.score = new ScoreLabel();
     this.score.show();
@@ -70,7 +83,7 @@ class GameScene extends Scene {
     const backWallColor = 0x73411F;
 
     const materials = [
-      new MeshBasicMaterial({ color: wallColor, side: BackSide }), // left wall. try with image, map: loader.load('./jwall.jpg')
+      new MeshBasicMaterial({ color: wallColor, side: BackSide }), // left wall
       new MeshBasicMaterial({ color: wallColor, side: BackSide }), // right wall
       new MeshBasicMaterial({ color: wallColor, side: BackSide }), // top wall  
       new MeshBasicMaterial({ color: floorColor, side: BackSide }), // floor
@@ -93,6 +106,18 @@ class GameScene extends Scene {
     // recipe list ui overlay
     this.recipeList = new RecipeList();
     this.recipeList.show();
+
+    // Initialize modals
+    this.rulesModal = new RulesModal();
+    this.pauseModal = new PauseModal({
+      onRules: () => this.rulesModal.show(),
+      onQuit: () => this.handleQuit(),
+      onPause: () => this.togglePause()
+    });
+    this.muteButton = new MuteButton({
+      onToggleMute: (isMuted) => this.toggleMute(isMuted)
+    });
+    this.startMusic();
 
     // floor
     const floor = new Floor();
@@ -179,7 +204,6 @@ class GameScene extends Scene {
             furnitureObject = new TunaBin(this, row, col);
             this.state.furnitureGrid[row][col] = furnitureObject;
             break;
-          // Add more cases for different furniture types as needed
           default:
             break;
         }
@@ -202,7 +226,6 @@ class GameScene extends Scene {
             itemObject = new Pot(this, row, col);
             this.state.itemGrid[row][col] = itemObject;
             break;
-          // Add more cases for different item types as needed
           default:
             break;
         }
@@ -221,8 +244,50 @@ class GameScene extends Scene {
     }
   }
 
+  handleQuit() {
+    this.isPaused = false;
+    this.pauseModal.hide();
+    // Reset all movement keys when quitting
+    keys.forward = false;
+    keys.backward = false;
+    keys.left = false;
+    keys.right = false;
+    this.stopMusic();
+    if (this.onQuit) this.onQuit();
+  }
+
+  startMusic() {
+    if (!this.isMuted) {
+      this.backgroundMusic.play().catch(error => {
+        console.log("Music autoplay prevented. User interaction required:", error);
+      });
+    }
+  }
+  stopMusic() {
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
+  }
+
+  toggleMute(isMuted) {
+    this.isMuted = isMuted;
+    if (this.isMuted) {
+      this.backgroundMusic.pause();
+    } else {
+      if (!this.isPaused) {
+        this.backgroundMusic.play().catch(error => {
+          console.log("Music play error:", error);
+        });
+      }
+    }
+  }
   
   handleKeyDown(event) {
+    if (event.key === "Escape") {
+      this.togglePause();
+      return;
+    }
+    if (this.isPaused) return;
+
     switch (event.key) {
       case "w":
       case "ArrowUp":
@@ -249,8 +314,9 @@ class GameScene extends Scene {
     }
   }
 
-
   handleKeyUp(event) {
+    if (this.isPaused) return;
+
     switch (event.key) {
       case "w":
       case "ArrowUp":
@@ -271,7 +337,29 @@ class GameScene extends Scene {
     }
   }
 
+  togglePause() {
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+      this.pauseModal.show();
+      // Reset all movement keys when pausing
+      keys.forward = false;
+      keys.backward = false;
+      keys.left = false;
+      keys.right = false;
+      this.backgroundMusic.pause();
+    } else {
+      this.pauseModal.hide();
+      if (!this.isMuted) {
+        this.backgroundMusic.play().catch(error => {
+          console.log("Music play error:", error);
+        });
+      }
+    }
+  }
+
   update(timeStamp) {
+    if (this.isPaused) return;
+
     const updateList = this.state.updateList;
     const delta = this.clock.getDelta();
     
@@ -299,8 +387,22 @@ class GameScene extends Scene {
       obj.update(timeStamp);
     }
   }
+
   destroy() {
-    if (this.recipeList && typeof this.recipeList.destroy === "function") this.recipeList.destroy();
+    if (this.recipeList && typeof this.recipeList.destroy === "function") {
+      this.recipeList.destroy();
+    }
+    if (this.rulesModal && typeof this.rulesModal.destroy === "function") {
+      this.rulesModal.destroy();
+    }
+    if (this.pauseModal && typeof this.pauseModal.destroy === "function") {
+      this.pauseModal.destroy();
+    }
+    if (this.muteButton && typeof this.muteButton.destroy === "function") {
+      this.muteButton.destroy();
+    }
+    // Stop and cleanup music
+    this.stopMusic();
   }
 }
 
