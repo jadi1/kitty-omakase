@@ -158,7 +158,7 @@ export default class PauseModal {
 
   show() {
     if (this.modal) this.modal.style.display = "flex";
-    if (this.pauseButton) this.pauseButton.style.display = "none";
+    if (this.pauseButton) this.pauseButton.style.display = "flex";
   }
 
   hide() {
