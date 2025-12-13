@@ -18,13 +18,6 @@ async function startGame() {
   await loadAllMasterMeshes();
 
   // Initialize core ThreeJS components
-  // const scene = new GameScene();
-  let currentScene = new WelcomeScene({
-    onStart: () => {
-      currentScene.destroy();
-      currentScene = new GameScene();
-    }
-  });
   const camera = new PerspectiveCamera();
   const renderer = new WebGLRenderer({ antialias: true });
   
@@ -49,6 +42,27 @@ async function startGame() {
   controls.target.set((numCols - 1) / 2, 0, (numRows - 1) / 2);
   controls.update();
 
+  let currentScene;
+
+  const switchToWelcome = () => {
+    if (currentScene) {
+      currentScene.destroy();
+    }
+    currentScene = new WelcomeScene({
+      onStart: switchToGame
+    });
+  };
+
+  const switchToGame = () => {
+    if (currentScene) {
+      currentScene.destroy();
+    }
+    currentScene = new GameScene(switchToWelcome);
+  };
+
+  // Start with welcome scene
+  switchToWelcome();
+  
   // Render loop
   const onAnimationFrameHandler = (timeStamp) => {
     controls.update();

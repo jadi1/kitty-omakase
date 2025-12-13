@@ -15,7 +15,7 @@ export default class RulesModal {
       display: "none",
       alignItems: "center",
       justifyContent: "center",
-      zIndex: 10000,
+      zIndex: 10001,
       background: "rgba(0,0,0,0.5)",
     });
 
