@@ -10,6 +10,7 @@ import Plate from "../Items/Plate/Plate";
 import FoodItem from "../Items/FoodItem/FoodItem";
 import Stove from "../KitchenFurniture/Stove/Stove";
 import { PreparedFood } from "../Items/FoodItem";
+import Delivery from "../KitchenFurniture/Delivery/Delivery"
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -197,6 +198,14 @@ class ToonCat extends Group {
       item.beGrabbed(this);
       console.log("Picked up:", item);
       console.log(item.heldObject);
+      // spawn a new plate logic
+      if (item instanceof Plate && targetRow == this.parent.plateSpawnRow && targetCol == this.parent.plateSpawnCol) {
+        setTimeout(() => {
+          const newPlate = new Plate(this.parent, targetRow, targetCol);
+          this.parent.state.itemGrid[targetRow][targetCol] = newPlate;
+        }, 3000);
+
+      }
       return;
     }
 
@@ -222,6 +231,16 @@ class ToonCat extends Group {
       } 
     }
     // check for foods/plates/pots
+    // dropping into delivery
+    if (
+      this.parent.state.furnitureGrid[targetRow][targetCol] &&
+      this.parent.state.furnitureGrid[targetRow][targetCol] instanceof Delivery
+    ) {
+      console.log("Delivering Food");
+      held.deliver(this.parent.recipeList);
+      return;
+    }
+
     const item = this.parent.state.itemGrid[targetRow][targetCol];
     // regular drop: drop if the target cell is empty
     if (item == null) {
