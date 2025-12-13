@@ -8,20 +8,23 @@ class Item extends Group {
     this.col = col;
     this.isHeld = false;
     this.heldBy = null;
+    this.name = "";
+    this.parent = parent;
 
-    parent.addToUpdateList(this);
-    parent.add(this);
+    this.parent.addToUpdateList(this);
+    this.parent.add(this);
   }
 
   beGrabbed(player) {
-    console.log("be grabbed");
     this.isHeld = true;
     this.heldBy = player;
   }
 
-  beDropped() {
+  beDropped(targetRow, targetCol) {
     this.isHeld = false;
     this.heldBy = null;
+    this.row = targetRow;
+    this.col = targetCol;
   }
 
   trash() {
@@ -29,8 +32,8 @@ class Item extends Group {
   }
 
   delete() {
-    this.parent.removeFromUpdateList(this);
-    this.parent.remove(this);
+    this.parent?.removeFromUpdateList?.(this);
+    this.parent?.remove?.(this);
   }
 
   update(timeStamp) {
@@ -38,7 +41,7 @@ class Item extends Group {
       this.position.z = this.row * tileSize;
       this.position.x = this.col * tileSize;
 
-      // if on furniture, set y to furniture height (assumed 0 here)
+      // if on furniture, set y to furniture height
       if (this.parent && this.parent.state && this.parent.state.furnitureGrid) {
         const furniture = this.parent.state.furnitureGrid[this.row][this.col];
         if (furniture) {
@@ -55,8 +58,12 @@ class Item extends Group {
       }
     } else if (this.heldBy) {
       this.position.z = this.heldBy.position.z;
-      this.position.y = this.heldBy.position.y + .7; // Slightly above the player
       this.position.x = this.heldBy.position.x;
+      if (this.heldBy.name == "plate") {
+        this.position.y = this.heldBy.position.y + .05; // slightly above plate
+      } else {
+        this.position.y = this.heldBy.position.y + .7; // above player
+      }
     }
   }
 }

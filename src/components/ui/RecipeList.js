@@ -49,7 +49,7 @@ export default class RecipeList {
 		const index = this.cards.indexOf(oldCard);
 		setTimeout(() => {
 			oldCard.destroy();
-		}, 100);
+		}, 500);
 		// remove this card and shift all the cards forward
 		if (index > -1) {
 			this.cards.splice(index, 1);

@@ -9,3 +9,4 @@ export * from "./TunaRice/index.js";
 export * from "./SalmonSushi/index.js";
 export * from "./TunaSushi/index.js";
 export { default as FoodItem } from "./FoodItem.js";
+export { default as PreparedFood } from "./PreparedFood.js";

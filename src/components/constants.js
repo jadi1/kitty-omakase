@@ -10,10 +10,18 @@ export const facings = Object.freeze({
 });
 
 export const food = Object.freeze({
-  SALMON: "salmon",
   RICE: "rice",
-  NORI: "nori", // to test delivery, change this to 'tunasushi'
+  RICEPOT: "ricepot",
+  NORI: "nori",
+  SALMON: "salmon",
   TUNA: "tuna",
+  CHOPPEDSALMON: "choppedsalmon",
+  CHOPPEDTUNA: "choppedtuna",
+  RICENORI: "ricenori",
+  TUNARICE: "tunarice",
+  TUNANORI: "tunanori",
   TUNASUSHI: "tunasushi",
-  SALMONSUSHI: "salmonsushi",
+  SALMONNORI: "salmonnori",
+  SALMONRICE: "salmonrice",
+  SALMONSUSHI: "salmonsushi"
 });

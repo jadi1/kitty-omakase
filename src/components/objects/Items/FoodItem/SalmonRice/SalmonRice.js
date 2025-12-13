@@ -7,8 +7,7 @@ class SalmonRice extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
 ;
-    this.contains.push(food.RICE);
-    this.contains.push(food.SALMON);
+    this.name = food.SalmonRice;
     
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);

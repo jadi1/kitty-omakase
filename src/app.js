@@ -10,49 +10,58 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from "three";
 import { GameScene } from "scenes";
 import { numRows, numCols } from "./components/constants";
+import { loadAllMasterMeshes } from "./components/objects/Items/FoodItem/loadMasterMeshes";
+import * as THREE from 'three';
 
-// Initialize core ThreeJS components
-const scene = new GameScene();
-const camera = new PerspectiveCamera();
-const renderer = new WebGLRenderer({ antialias: true });
+async function startGame() {
+  // load all meshes 
+  await loadAllMasterMeshes();
 
-// Set up camera
-camera.position.set((numCols - 1) / 2, 10, numRows - 1);
+  // Initialize core ThreeJS components
+  const scene = new GameScene();
+  const camera = new PerspectiveCamera();
+  const renderer = new WebGLRenderer({ antialias: true });
+  
+  // Set up camera
+  camera.position.set((numCols - 1) / 2, 10, numRows - 1);
 
-// Set up renderer, canvas, and minor CSS adjustments
-renderer.setPixelRatio(window.devicePixelRatio);
-const canvas = renderer.domElement;
-canvas.style.display = "block"; // Removes padding below canvas
-document.body.style.margin = 0; // Removes margin around page
-document.body.style.overflow = "hidden"; // Fix scrolling
-document.body.appendChild(canvas);
+  // Set up renderer, canvas, and minor CSS adjustments
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  const canvas = renderer.domElement;
+  canvas.style.display = "block"; // Removes padding below canvas
+  document.body.style.margin = 0; // Removes margin around page
+  document.body.style.overflow = "hidden"; // Fix scrolling
+  document.body.appendChild(canvas);
 
-// Set up orbit controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 16;
-controls.target.set((numCols - 1) / 2, 0, (numRows - 1) / 2);
-controls.update();
-
-// Render loop
-const onAnimationFrameHandler = (timeStamp) => {
+  // Set up orbit controls
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.minDistance = 4;
+  controls.maxDistance = 16;
+  controls.target.set((numCols - 1) / 2, 0, (numRows - 1) / 2);
   controls.update();
-  renderer.render(scene, camera);
-  scene.update && scene.update(timeStamp);
-  window.requestAnimationFrame(onAnimationFrameHandler);
-};
-window.requestAnimationFrame(onAnimationFrameHandler);
 
-// Resize Handler
-const windowResizeHandler = () => {
-  const { innerHeight, innerWidth } = window;
-  renderer.setSize(innerWidth, innerHeight);
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-};
-windowResizeHandler();
-window.addEventListener("resize", windowResizeHandler, false);
-window.addEventListener("keydown", scene.handleKeyDown);
-window.addEventListener("keyup", scene.handleKeyUp);
+  // Render loop
+  const onAnimationFrameHandler = (timeStamp) => {
+    controls.update();
+    renderer.render(scene, camera);
+    scene.update && scene.update(timeStamp);
+    window.requestAnimationFrame(onAnimationFrameHandler);
+  };
+  window.requestAnimationFrame(onAnimationFrameHandler);
+
+  // Resize Handler
+  const windowResizeHandler = () => {
+    const { innerHeight, innerWidth } = window;
+    renderer.setSize(innerWidth, innerHeight);
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+  };
+  windowResizeHandler();
+  window.addEventListener("resize", windowResizeHandler, false);
+  window.addEventListener("keydown", scene.handleKeyDown);
+  window.addEventListener("keyup", scene.handleKeyUp);
+}
+await startGame();

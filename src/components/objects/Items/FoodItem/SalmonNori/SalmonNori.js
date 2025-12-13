@@ -7,13 +7,12 @@ class SalmonNori extends FoodItem {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
 ;
-    this.contains.push(food.NORI);
-    this.contains.push(food.SALMON);
+    this.name = food.SALMONNORI;
     
     sharedLoader.load(MODEL, (gltf) => {
       this.add(gltf.scene);
       this.model = gltf.scene;
-      this.model.scale.set(0.5, 0.5, 0.55);
+      this.model.scale.set(0.5, 0.5, 0.5);
     });
   }
 }
