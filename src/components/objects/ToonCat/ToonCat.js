@@ -59,24 +59,6 @@ class ToonCat extends Group {
         this.action.stop(); // don't play automatically
       }
 
-      // // setting up animation mixer
-      // if (gltf.animations && gltf.animations.length > 0) {
-      //   this.mixer = new THREE.AnimationMixer(this.model);
-      //   this.animations = {};
-
-      //   // Store all animations by name
-      //   gltf.animations.forEach((clip) => {
-      //     console.log("Animation found:", clip.name);
-      //     this.animations[clip.name] = this.mixer.clipAction(clip);
-      //     // by default, don't play the animation
-      //     this.action = this.mixer.clipAction(gltf.animations[0]);
-      //     this.action.stop();
-      //   });
-
-      //   gltf.animations.forEach((clip) => {
-      //     console.log(clip.tracks.map(t => t.name));
-      //   });
-      // }
       window.addEventListener("keydown", (e) => this.handleKeyDown(e));
       window.addEventListener("keyup", (e) => this.handleKeyUp(e));
    });
