@@ -1,7 +1,8 @@
 import { sharedLoader } from "../../loader.js";
 import MODEL from "./plate.glb";
 import Item from "../Item";
-import FoodItem from "../Item"
+import PreparedFood from "../FoodItem/PreparedFood.js";
+import { removeMesh } from "../../../utils.js";
 
 class Plate extends Item {
   constructor(parent, row = 0, col = 0) {
@@ -14,21 +15,39 @@ class Plate extends Item {
       this.model.scale.set(0.5, 0.5, 0.5);
     });
 
-    this.foodItem = null;
+    this.food = null; // holds reference to food
+  }
+
+  trash() {
+    if (this.food) {
+      console.log("Plate's item trashed.");
+      removeMesh(this.food);
+      this.food = null;
+    }
   }
 
   receiveObject(object) {
-    if (object instanceof FoodItem && object.isPrepared == true) {
-      if (this.foodItem == null) {
-        this.foodItem = object;
-      } else { // handle the case where you already have a food object, gotta combine them!
-        // combine with whatever you currently have on plate
+    console.log("Plate is receiving object", object);
+
+    // if plate is empty
+    if (this.food == null) {
+      // create new preparedfood
+      const newFood = new PreparedFood(this.parent, this.row, this.col, "");
+      this.food = newFood;
+      this.food.beGrabbed(this);
+      const success = this.food.receiveObject(object);
+      console.log(newFood); 
+      if (success) {
+        console.log("Plate successfully received object");
+        object.trash(); // empty pot / clear food
       }
-      console.log(`${object.name} placed on plate.`);
-      return true;
-    } else {
-      console.log("Invalid item.");
-      return false;
+      return success;
+    } else { // plate already has food
+      const success = this.food.receiveObject(object);
+      if (success) {
+        object.trash(); // empty pot / clear food
+      }
+      return success;
     }
   }
 

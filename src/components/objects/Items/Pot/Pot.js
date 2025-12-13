@@ -7,7 +7,8 @@ import Rice from "../FoodItem/Rice/Rice.js";
 class Pot extends Item {
   constructor(parent, row = 0, col = 0) {
     super(parent, row, col);
-    this.heldObject = null;
+    this.heldObject = false; // pot can only hold rice, change to bool
+    this.isPrepared = false; // pot can only be prepared when rice is inside, start with false
 
     this.name = "pot";
     sharedLoader.load(EMPTY_MODEL, (gltf) => {
@@ -25,34 +26,30 @@ class Pot extends Item {
   }
 
   receiveObject(object) {
-    if (this.heldObject == null && object instanceof Rice) {
-      this.heldObject = object;
-      this.heldObject.prepare();
-      console.log(`${object.name} placed in pot.`);
+    if (!this.heldObject && object instanceof Rice) {
+      this.heldObject = true;
+
+      this.riceMesh.visible = true;
+      this.emptyMesh.visible = false;
+
+      object.trash(); // stop rendering the rice
       return true;
     } else {
-      console.log("Pot already has an item.");
+      console.log("Invalid object or pot already has an item.");
       return false;
     }
   }
 
   trash() {
-    if (this.heldObject) {
-      this.heldObject.trash();
+    console.log("Pot trashed.");
+    if (this.heldObject == true) {
       console.log("Pot's held item trashed.");
-    }
-  }
-
-  update(timeStamp) {
-    super.update(timeStamp);
-    if (!this.emptyMesh || !this.riceMesh) return;
-    if (this.heldObject && this.heldObject instanceof Rice) {
-      this.riceMesh.visible = true;
-      this.emptyMesh.visible = false;
-    } else {
       this.riceMesh.visible = false;
       this.emptyMesh.visible = true;
+      this.heldObject = false;
+      this.isPrepared = false;
     }
+    console.log(this);
   }
 }
 

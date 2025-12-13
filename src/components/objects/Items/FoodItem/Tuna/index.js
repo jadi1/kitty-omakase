@@ -1,1 +1,1 @@
-export { default as Salmon } from './Salmon.js';
+export { default as Tuna } from './Tuna.js';
