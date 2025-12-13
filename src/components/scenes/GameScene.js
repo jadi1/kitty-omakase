@@ -133,7 +133,7 @@ class GameScene extends Scene {
       onQuit: () => this.handleQuit()
     });
     // TEST BUTTON - Remove this in production
-    this._buildTestButton();
+    // this._buildTestButton();
 
     this.startMusic();
 
@@ -484,6 +484,12 @@ class GameScene extends Scene {
     }
     if (this.endScreenModal && typeof this.endScreenModal.destroy === "function") {
       this.endScreenModal.destroy();
+    }
+    if (this.score && typeof this.score.destroy == "function") {
+      this.score.destroy();
+    }
+    if (this.timerLabel && typeof this.timerLabel.destroy == "function") {
+      this.timerLabel.destroy();
     }
     // Remove test button
     if (this.testButton && this.testButton.parentNode) {

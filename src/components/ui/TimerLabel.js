@@ -9,7 +9,7 @@ export default class TimerLabel {
     Object.assign(this.container.style, {
       position: "fixed",
       bottom: "18px",
-      right: "96px",
+      right: "20px",
       zIndex: 9999,
       pointerEvents: "auto",
       // NEW
