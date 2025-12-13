@@ -1,4 +1,7 @@
 import RulesModal from './RulesModal.js';
+import titleSrc from '../../assets/kitty-omakase-title.png';
+import bgSrc from '../../assets/omakase-bg.png';
+import catSrc from '../../assets/cat-icon.png'
 
 export default class WelcomeScreen {
   constructor({ onStart = () => {} } = {}) {
@@ -21,7 +24,7 @@ export default class WelcomeScreen {
       justifyContent: "center",
       pointerEvents: "auto",
       zIndex: 9999,
-      backgroundImage: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/omakase-bg.png')",
+      backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${bgSrc})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat"
@@ -42,7 +45,7 @@ export default class WelcomeScreen {
 
     // Title
     const titleImg = document.createElement("img");
-    titleImg.src = "/kitty-omakase-title.png";
+    titleImg.src = titleSrc;
     Object.assign(titleImg.style, {
       display: "block",
       margin: "0 auto 5% auto",
@@ -51,7 +54,7 @@ export default class WelcomeScreen {
     });
 
     const catIcon = document.createElement("img");
-    catIcon.src = "/cat-icon.png";
+    catIcon.src = catSrc;
     Object.assign(catIcon.style, {
       position: "absolute",
       bottom: "0", 
