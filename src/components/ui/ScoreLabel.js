@@ -8,8 +8,8 @@ export default class ScoreLabel {
     this.container = document.createElement("div");
     Object.assign(this.container.style, {
       position: "fixed",
-      top: "12px",
-      right: "12px",
+      top: "18px",
+      right: "96px",
       zIndex: 9999,
       pointerEvents: "auto",
     });

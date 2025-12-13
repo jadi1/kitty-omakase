@@ -63,7 +63,7 @@ class Item extends Group {
       if (this.heldBy.name == "plate") {
         this.position.y = this.heldBy.position.y + .05; // slightly above plate
       } else {
-        this.position.y = this.heldBy.position.y + .7; // above player
+        this.position.y = this.heldBy.position.y + .73; // above player
       }
     }
   }
