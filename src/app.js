@@ -57,7 +57,7 @@ async function startGame() {
     if (currentScene) {
       currentScene.destroy();
     }
-    currentScene = new GameScene(switchToWelcome);
+    currentScene = new GameScene(switchToWelcome, switchToGame);
   };
 
   // Start with welcome scene
