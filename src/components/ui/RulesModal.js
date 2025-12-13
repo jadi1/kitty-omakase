@@ -64,7 +64,7 @@ export default class RulesModal {
 
     // Close button
     this.closeBtn = document.createElement("button");
-    this.closeBtn.textContent = "Close";
+    this.closeBtn.textContent = "CLOSE";
     Object.assign(this.closeBtn.style, {
       marginTop: "12px",
       padding: "8px 12px",
