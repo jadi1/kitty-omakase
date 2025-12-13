@@ -1,6 +1,5 @@
 import { sharedLoader } from "../../../loader";
 import MODEL from "./salmon.glb";
-import CHOPPED_MODEL from "./choppedsalmon.glb";
 import FoodItem from "../FoodItem";
 import { food } from "../../../../constants";
 
