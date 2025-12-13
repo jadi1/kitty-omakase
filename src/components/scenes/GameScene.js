@@ -22,6 +22,7 @@ import {
 import { BasicLights } from "lights";
 import { numRows, numCols, tileSize, food } from "../constants";
 import * as THREE from "three";
+import bgMusic from '../../assets/background-music.mp3';
 
 const keys = {
   forward: false,
@@ -42,7 +43,7 @@ class GameScene extends Scene {
     this.isMuted = false;
 
     // init bg music
-    this.backgroundMusic = new Audio('/background-music.mp3'); // Replace with your audio file path
+    this.backgroundMusic = new Audio(bgMusic); // Replace with your audio file path
     this.backgroundMusic.loop = true;
     this.backgroundMusic.volume = 0.3;
 
