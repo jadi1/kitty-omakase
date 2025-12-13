@@ -29,6 +29,8 @@ class ProgressBar {
     this.fill.scale.set(0, 1, 1); // start empty
     this.group.add(this.fill);
 
+    this.group.rotation.x = -Math.PI / 2; // face upwards
+
     this.progress = 0; // 0 to 1
     this.width = width;
   }
