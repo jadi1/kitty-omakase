@@ -2,6 +2,7 @@ export default class EndScreenModal {
   constructor({ onRestart = () => {}, onQuit = () => {} } = {}) {
     this.onRestart = onRestart;
     this.onQuit = onQuit;
+    this.finalScore = 0;
     this._build();
   }
 
@@ -49,9 +50,9 @@ export default class EndScreenModal {
     });
 
     // sushi roll counter. TODO: fill in score
-    const rollCounterText = document.createElement("h4");
-    rollCounterText.textContent = "You made xx sushi rolls";
-    Object.assign(rollCounterText.style, { 
+    this.rollCounterText = document.createElement("h4");
+    this.rollCounterText.textContent = `Your final score is ${this.finalScore}`;
+    Object.assign(this.rollCounterText.style, { 
       marginTop: 0,
       marginBottom: "15px",
       fontSize: "20px",
@@ -106,16 +107,18 @@ export default class EndScreenModal {
     btnContainer.appendChild(this.restartBtn);
     btnContainer.appendChild(this.quitBtn);
     card.appendChild(title);
-    card.appendChild(rollCounterText);
+    card.appendChild(this.rollCounterText);
     card.appendChild(btnContainer);
     this.modal.appendChild(card);
     
     document.body.appendChild(this.modal);
   }
 
-  show() {
-    if (this.modal) this.modal.style.display = "flex";
-  }
+  show(finalScore) {
+  this.finalScore = finalScore;
+  this.rollCounterText.textContent = `Your final score is ${finalScore}`;
+  this.modal.style.display = "flex";
+}
 
   hide() {
     if (this.modal) this.modal.style.display = "none";

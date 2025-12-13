@@ -1,6 +1,7 @@
 import { Scene, Color, BoxGeometry, MeshBasicMaterial, Mesh, BackSide, TextureLoader } from "three";
 import RecipeList from "../ui/RecipeList.js";
 import ScoreLabel from "../ui/ScoreLabel.js";
+import TimerLabel from "../ui/TimerLabel.js";
 import PauseModal from "../ui/PauseModal.js";
 import RulesModal from "../ui/RulesModal.js";
 import MuteButton from "../ui/MuteButton.js";
@@ -40,6 +41,12 @@ class GameScene extends Scene {
     // Call parent Scene() constructor
     super();
 
+    this.levelTime = 3 * 60; // 3 minutes
+    this.elapsedLevelTime = 0;
+    this.timerLabel = new TimerLabel(); // reuse ScoreLabel or create a TimerLabel
+    this.timerLabel.show();
+    this.updateTimerLabel();
+
     this.onQuit = onQuit;
     this.onRestart = onRestart;
     this.isPaused = false;
@@ -62,6 +69,7 @@ class GameScene extends Scene {
     }
 
     this.clock = new THREE.Clock();
+    this.clock.start()
     this.score = new ScoreLabel();
     this.score.show();
 
@@ -285,6 +293,10 @@ class GameScene extends Scene {
     keys.backward = false;
     keys.left = false;
     keys.right = false;
+
+    this.elapsedLevelTime = 0;
+    this.updateTimerLabel();
+    this.clock.start();
     if (this.onRestart) this.onRestart();
   }
 
@@ -391,7 +403,9 @@ class GameScene extends Scene {
       keys.left = false;
       keys.right = false;
       this.backgroundMusic.pause();
+      this.clock.stop();
     } else {
+      this.clock.start();
       this.pauseModal.hide();
       if (!this.isMuted) {
         this.backgroundMusic.play().catch(error => {
@@ -402,9 +416,10 @@ class GameScene extends Scene {
   }
 
   handleEndGame() {
-    this.endScreenModal.show()
+    this.endScreenModal.show(this.score.score);
     this.isGameEnd = true;
     this.backgroundMusic.pause();
+    this.clock.stop();
   }
 
   update(timeStamp) {
@@ -437,6 +452,21 @@ class GameScene extends Scene {
       obj.update(delta);
       // for pots and chopping, update their progress bar
     }
+
+    // Update level timer
+    this.elapsedLevelTime += delta;
+    this.updateTimerLabel();
+
+    if (this.elapsedLevelTime >= this.levelTime) {
+      this.handleEndGame();
+    }
+  }
+
+  updateTimerLabel() {
+    const remaining = Math.max(0, this.levelTime - this.elapsedLevelTime);
+    const minutes = Math.floor(remaining / 60);
+    const seconds = Math.floor(remaining % 60);
+    this.timerLabel.setText(`${minutes}:${seconds.toString().padStart(2, "0")}`);
   }
 
   destroy() {
