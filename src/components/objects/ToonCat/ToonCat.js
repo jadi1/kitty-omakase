@@ -12,6 +12,7 @@ import FoodItem from "../Items/FoodItem/FoodItem";
 import Stove from "../KitchenFurniture/Stove/Stove";
 import { PreparedFood } from "../Items/FoodItem";
 import Delivery from "../KitchenFurniture/Delivery/Delivery"
+import CuttingBoardTable from "../KitchenFurniture/CuttingBoardTable/CuttingBoardTable";
 
 class ToonCat extends Group {
   constructor(parent, row = 0, col = 0) {
@@ -223,10 +224,18 @@ class ToonCat extends Group {
       this.parent.state.itemGrid[targetRow][targetCol] = null;
       item.beGrabbed(this);
       console.log("Picked up:", item);
+      // special case: you've picked up pot
+      if (item instanceof Pot) {
+        item.onStove = false;
+      }
+      
       // special case: you've picked an item off the plate generator
       const furniture = this.parent.state.furnitureGrid[targetRow][targetCol];
       if (furniture && furniture instanceof Table && furniture.name == PLATEGENERATOR) {
         furniture.regeneratePlate(item.name);
+      // special case: you've picked an item off the cutting board
+      } else if (furniture && furniture instanceof CuttingBoardTable) {
+        furniture.pickUp(item);
       }
       return;
     }
@@ -337,6 +346,7 @@ class ToonCat extends Group {
       }
     }
     if (furniture && furniture instanceof Stove) {
+      held.onStove = true;
       furniture.interact();
     }
     

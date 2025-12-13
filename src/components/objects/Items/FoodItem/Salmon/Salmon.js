@@ -16,26 +16,35 @@ class Salmon extends FoodItem {
       this.model.scale.set(0.1, 0.1, 0.1);
     });
 
-    // sharedLoader.load(CHOPPED_MODEL, (gltf) => {
-    //   this.add(gltf.scene);
-    //   this.choppedModel = gltf.scene;
-    //   this.choppedModel.scale.set(0.15, 0.15, 0.15);
-    //   this.choppedModel.visible = false;
-    // });
+    // chopping state
+    this.isBeingChopped = false;
+    this.elapsedChopTime = 0;
+    this.totalChopTime = 3; // seconds
+    this.progressBar = null; // will be assigned
   }
 
-  // never gets called
-  // prepare() {
-  //   if (!this.isPrepared) {
-  //     this.isPrepared = true;
+  startChopping() {
+    if (this.isPrepared) return;
+    this.isBeingChopped = true;
+    if (this.progressBar) this.progressBar.startProgress();
+  }
 
-  //     // switch models
-  //     if (!this.model || !this.choppedModel) return;
+  stopChopping() {
+    this.isBeingChopped = false;
+  }
 
-  //     this.model.visible = false;
-  //     this.choppedModel.visible = true;
-  //   }
-  // }
+  updateChopping(delta) {
+    if (!this.isBeingChopped || this.isPrepared) return;
+
+    this.elapsedChopTime += delta;
+    if (this.progressBar) this.progressBar.setProgress(this.elapsedChopTime / this.totalChopTime);
+
+    if (this.elapsedChopTime >= this.totalChopTime) {
+      this.isPrepared = true;
+      this.isBeingChopped = false;
+    }
+  }
+
 }
 
 export default Salmon;

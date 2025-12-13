@@ -138,16 +138,16 @@ class GameScene extends Scene {
     this.populateFurnitureGrid(initialFurniture);
 
     const initialItems = [
-      [" ", " ", " ", " ", " ", " ", " ", " "],
-      [" ", " ", " ", " ", " ", " ", " ", "p"],
+      [" ", " ", " ", " ", " ", " ", "p", " "],
+      [" ", " ", " ", " ", " ", " ", " ", ""],
       [" ", " ", " ", " ", " ", " ", " ", ""],
       [" ", " ", " ", "o", "o", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
     ];
     // hardcode plate generator table
-    this.plateSpawnRow = 1;
-    this.plateSpawnCol = 7;
+    this.plateSpawnRow = 0;
+    this.plateSpawnCol = 6;
     this.state.furnitureGrid[this.plateSpawnRow][this.plateSpawnCol].name = PLATEGENERATOR;
     
     this.populateItemGrid(initialItems);
@@ -384,7 +384,8 @@ class GameScene extends Scene {
     }
     // Call update for each object in the updateList
     for (const obj of updateList) {
-      obj.update(timeStamp);
+      obj.update(delta);
+      // for pots and chopping, update their progress bar
     }
   }
 
