@@ -53,21 +53,22 @@ class Plate extends Item {
 
   // this deletion is causing some weird behavior
   deliver(recipeList) {
-    const foodItemName = this.foodItem.name;
+    const foodName = this.food.name;
     // console.log("recipeList before: ", recipeList);
     for (const card of recipeList.cards) {
-      if (card.recipeName == foodItemName) {
-        console.log("foodItem? ", this.foodItem)
+      if (card.recipeName == foodName) {
+        console.log("foodItem? ", this.food)
         recipeList.repopulate(card);
         // console.log("recipeList after: ", recipeList);
         //recipeList.repopulate();
         // causes an error when parent is null
-        // this.foodItem.delete();
+        this.food.trash();
+        this.delete();
         // this.foodItem = null;
-        // this.delete()
-        break;
+        return true;
       }
     }
+    return false;
   }
 }
 

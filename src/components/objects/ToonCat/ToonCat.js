@@ -237,7 +237,10 @@ class ToonCat extends Group {
       this.parent.state.furnitureGrid[targetRow][targetCol] instanceof Delivery
     ) {
       console.log("Delivering Food");
-      held.deliver(this.parent.recipeList);
+      const success = held.deliver(this.parent.recipeList);
+      if (success) {
+        this.heldObject = null;
+      }
       return;
     }
 

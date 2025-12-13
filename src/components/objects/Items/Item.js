@@ -9,9 +9,10 @@ class Item extends Group {
     this.isHeld = false;
     this.heldBy = null;
     this.name = "";
+    this.parent = parent;
 
-    parent.addToUpdateList(this);
-    parent.add(this);
+    this.parent.addToUpdateList(this);
+    this.parent.add(this);
   }
 
   beGrabbed(player) {
