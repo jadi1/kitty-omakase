@@ -1,3 +1,5 @@
+import ruleTitleImgSrc from '../../assets/rules-title-resize.png';
+
 export default class RulesModal {
   constructor() {
     this._build();
@@ -39,7 +41,7 @@ export default class RulesModal {
 
     // Title
     const title = document.createElement("img");
-    title.src = "/rules-title-resize.png";
+    title.src = ruleTitleImgSrc;
     Object.assign(title.style, { 
       width: "33%", 
       height: "auto",
@@ -52,7 +54,7 @@ export default class RulesModal {
         <li>Change directions using {W, A, S, D} or {↑, ↓, ←, →} </li>
         <li>Press {e} to pick up or drop objects</li>
         <li>To chop fish, press {spacebar} when the fish is on the cutting board</li>
-        <li>To cook rice, press {e} to place the rice in the pot. The rice is cooked automatically. Then press {e} again to place the rice on a plate.</li>
+        <li>To cook rice, press {e} to place the rice in the pot. Then press {e} again to place the rice on a plate.</li>
         <li>To deliver an order, press {e} when next to the delivery station (top of kitchen). A dish can only be delivered if it contains all the necessary ingredients and is on a plate.</li>
         <li>To trash a dish, press {e} next to the trash bin.</li>
       </ul>
