@@ -4,6 +4,7 @@ import ScoreLabel from "../ui/ScoreLabel.js";
 import PauseModal from "../ui/PauseModal.js";
 import RulesModal from "../ui/RulesModal.js";
 import MuteButton from "../ui/MuteButton.js";
+import EndScreenModal from "../ui/EndScreenModal.js";
 import {
   Floor,
   ToonCat,
@@ -35,13 +36,15 @@ const keys = {
 const speed = 3;  // adjust as needed
 
 class GameScene extends Scene {
-  constructor(onQuit) {
+  constructor(onQuit, onRestart) {
     // Call parent Scene() constructor
     super();
 
     this.onQuit = onQuit;
+    this.onRestart = onRestart;
     this.isPaused = false;
     this.isMuted = false;
+    this.isGameEnd = false;
 
     // init bg music
     this.backgroundMusic = new Audio(bgMusic); // Replace with your audio file path
@@ -117,6 +120,13 @@ class GameScene extends Scene {
     this.muteButton = new MuteButton({
       onToggleMute: (isMuted) => this.toggleMute(isMuted)
     });
+    this.endScreenModal = new EndScreenModal({
+      onRestart: () => this.handleRestart(),
+      onQuit: () => this.handleQuit()
+    });
+    // TEST BUTTON - Remove this in production
+    this._buildTestButton();
+
     this.startMusic();
 
     // floor
@@ -154,6 +164,29 @@ class GameScene extends Scene {
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+  }
+  _buildTestButton() {
+    // Test button for triggering end screen
+    this.testButton = document.createElement("button");
+    this.testButton.textContent = "TEST END";
+    Object.assign(this.testButton.style, {
+      position: "fixed",
+      top: "140px",
+      right: "20px",
+      padding: "8px 12px",
+      borderRadius: "10px",
+      border: "none",
+      background: "#4CAF50",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "14px",
+      fontWeight: "bold",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+      zIndex: 9998,
+    });
+    this.testButton.addEventListener("click", () => this.handleEndGame());
+    
+    document.body.appendChild(this.testButton);
   }
 
   populateFurnitureGrid(furnitureLayout) {
@@ -243,6 +276,17 @@ class GameScene extends Scene {
       this.state.updateList.splice(index, 1);
     }
   }
+  handleRestart() {
+    this.isGameEnd = false;
+    this.endScreenModal.hide();
+    // Stop music and reset keys
+    this.stopMusic();
+    keys.forward = false;
+    keys.backward = false;
+    keys.left = false;
+    keys.right = false;
+    if (this.onRestart) this.onRestart();
+  }
 
   handleQuit() {
     this.isPaused = false;
@@ -282,11 +326,11 @@ class GameScene extends Scene {
   }
   
   handleKeyDown(event) {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && !this.isGameEnd) {
       this.togglePause();
       return;
     }
-    if (this.isPaused) return;
+    if (this.isPaused || this.isGameEnd) return;
 
     switch (event.key) {
       case "w":
@@ -315,7 +359,7 @@ class GameScene extends Scene {
   }
 
   handleKeyUp(event) {
-    if (this.isPaused) return;
+    if (this.isPaused || this.isGameEnd) return;
 
     switch (event.key) {
       case "w":
@@ -357,8 +401,14 @@ class GameScene extends Scene {
     }
   }
 
+  handleEndGame() {
+    this.endScreenModal.show()
+    this.isGameEnd = true;
+    this.backgroundMusic.pause();
+  }
+
   update(timeStamp) {
-    if (this.isPaused) return;
+    if (this.isPaused || this.isGameEnd) return;
 
     const updateList = this.state.updateList;
     const delta = this.clock.getDelta();
@@ -400,6 +450,13 @@ class GameScene extends Scene {
     }
     if (this.muteButton && typeof this.muteButton.destroy === "function") {
       this.muteButton.destroy();
+    }
+    if (this.endScreenModal && typeof this.endScreenModal.destroy === "function") {
+      this.endScreenModal.destroy();
+    }
+    // Remove test button
+    if (this.testButton && this.testButton.parentNode) {
+      this.testButton.parentNode.removeChild(this.testButton);
     }
     // Stop and cleanup music
     this.stopMusic();
