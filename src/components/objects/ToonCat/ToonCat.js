@@ -2,9 +2,10 @@ import { Group } from "three";
 import { sharedLoader } from "../loader";
 import MODEL from "./toon_cat_free.glb";
 import * as THREE from "three";
-import { facings } from "../../constants";
+import { pointsPerOrder, pointsPerWrongOrder, PLATEGENERATOR } from "../../constants";
 import IngredientBin from "../KitchenFurniture/IngredientBin/IngredientBin";
 import Trash from "../KitchenFurniture/Trash/Trash";
+import Table from "../KitchenFurniture/Table/Table";
 import Pot from "../Items/Pot/Pot";
 import Plate from "../Items/Plate/Plate";
 import FoodItem from "../Items/FoodItem/FoodItem";
@@ -222,14 +223,10 @@ class ToonCat extends Group {
       this.parent.state.itemGrid[targetRow][targetCol] = null;
       item.beGrabbed(this);
       console.log("Picked up:", item);
-      console.log(item.heldObject);
-      // spawn a new plate logic
-      if (item instanceof Plate && targetRow == this.parent.plateSpawnRow && targetCol == this.parent.plateSpawnCol) {
-        setTimeout(() => {
-          const newPlate = new Plate(this.parent, targetRow, targetCol);
-          this.parent.state.itemGrid[targetRow][targetCol] = newPlate;
-        }, 3000);
-
+      // special case: you've picked an item off the plate generator
+      const furniture = this.parent.state.furnitureGrid[targetRow][targetCol];
+      if (furniture && furniture instanceof Table && furniture.name == PLATEGENERATOR) {
+        furniture.regeneratePlate(item.name);
       }
       return;
     }
@@ -253,20 +250,20 @@ class ToonCat extends Group {
         console.log("Trashing item");
         held.trash();
         return;
-      } 
-    }
-    // check for foods/plates/pots
-    // dropping into delivery
-    if (
-      this.parent.state.furnitureGrid[targetRow][targetCol] &&
-      this.parent.state.furnitureGrid[targetRow][targetCol] instanceof Delivery
-    ) {
-      console.log("Delivering Food");
-      const success = held.deliver(this.parent.recipeList);
-      if (success) {
-        this.heldObject = null;
+      } else if (furniture instanceof Delivery) {
+        console.log("Delivering Food");
+        const success = furniture.interact(held);
+        if (success === true) {
+          this.heldObject = null;
+          // successful delivery! increment score
+          this.parent.score.addScore(pointsPerOrder);
+        } else if (success === false) {
+          this.heldObject = null
+          // unsuccessful delivery... decrement score
+          this.parent.score.addScore(-pointsPerWrongOrder);
+        } // success undefined means do nothing
+        return;
       }
-      return;
     }
 
     const item = this.parent.state.itemGrid[targetRow][targetCol];
@@ -310,19 +307,6 @@ class ToonCat extends Group {
             this.heldObject = null ; // EDGE CASE TO ADD: if the item is also a food, you want to hold plate
           }
         }
-        // if (held.food == null) {
-        //   const success = held.receiveObject(item);
-        //   if (success) {
-        //     item.trash(); // remove ingredients
-        //   }
-        // } else { // plate is not empty
-        //   if (typeof item.receiveObject === 'function') { // check if that function is valid
-        //     const success = held.receiveObject(item);
-        //     if (success) {
-        //       item.trash(); // empty pot /remove ingredients
-        //     }
-        //   }
-        // }
       // you are holding food
       } else {
         // you can try putting it in the plate/pot
@@ -351,42 +335,6 @@ class ToonCat extends Group {
           }
         }
       }
-      // if target cell is a food item...
-      // if (item instanceof FoodItem || item instanceof Pot) {
-      //   // ...and you are holding a pot
-      //   if (held instanceof Pot) {
-      //     console.log("Placing pot onto item");
-      //     const success = held.receiveObject(item);
-      //     if (success) {
-      //       this.parent.state.itemGrid[targetRow][targetCol] = held; // update item grid 
-            
-      //       item.beGrabbed(held); // the item is grabbed by the pot
-      //       held.beDropped(targetRow, targetCol); // you drop the pot
-      //       this.heldObject = null; // no longer holding anything
-      //     }
-      //   // ...and you are holding a plate
-      //   } else if (held instanceof Plate) {
-      //     // should be very similar to pot
-      //     console.log("Pick up food with plate");
-      //     const success = held.receiveObject(item);
-      //     if (success) {
-      //       console.log("successfully placed food on plate");
-      //     }
-      //   }
-      // // or, target item is a pot / plate
-      // } else if (item instanceof Pot || item instanceof Plate) {
-      //   console.log("Placing item onto pot/plate");
-      //   const success = item.receiveObject(held);
-      //   if (success) {
-      //     item.beDropped(targetRow, targetCol);
-      //     if (item instanceof Plate && !(this.heldObject instanceof Pot)) {
-      //       this.heldObject = null; // you are no longer holding anything
-      //     }
-      //     console.log("SUCCESSFUL PLATE RECEIVING");
-      //   } else {
-      //     console.log("UNSUCCESSFUL PLATE RECIVING");
-      //   }
-      // }
     }
     if (furniture && furniture instanceof Stove) {
       furniture.interact();

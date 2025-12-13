@@ -1,5 +1,6 @@
 import { Scene, Color, BoxGeometry, MeshBasicMaterial, Mesh, BackSide, TextureLoader } from "three";
 import RecipeList from "../ui/RecipeList.js";
+import ScoreLabel from "../ui/ScoreLabel.js";
 import {
   Floor,
   ToonCat,
@@ -17,22 +18,8 @@ import {
   TunaBin,
 } from "objects";
 import { BasicLights } from "lights";
-import { numRows, numCols, tileSize, food } from "../constants";
+import { numRows, numCols, PLATEGENERATOR} from "../constants";
 import * as THREE from "three";
-
-// function makeTextSprite(message, size = 64, color = "red") {
-//   const canvas = document.createElement("canvas");
-//   const context = canvas.getContext("2d");
-//   context.font = `${size}px Arial`;
-//   context.fillStyle = color;
-//   context.fillText(message, 0, size);
-
-//   const texture = new THREE.CanvasTexture(canvas);
-//   const material = new THREE.SpriteMaterial({ map: texture });
-//   const sprite = new THREE.Sprite(material);
-//   sprite.scale.set(0.5, 0.25, 1); // world units
-//   return sprite;
-// }
 
 const keys = {
   forward: false,
@@ -51,54 +38,16 @@ class GameScene extends Scene {
     this.rows = numRows;
     this.cols = numCols;
 
-    // // optional grid helper
-    // const gridHelper = new THREE.GridHelper(tileSize * numCols, numCols, 0x00ff00, 0x444444);
-    // this.add(gridHelper);
-
-    // // loop through each cell
-    // for (let r = 0; r < numRows; r++) {
-    //   for (let c = 0; c < numCols; c++) {
-    //     const x = c * tileSize + tileSize / 2; // world X coordinate of cell center
-    //     const z = r * tileSize + tileSize / 2; // world Z coordinate of cell center
-    //     const y = 0.05; // slightly above ground
-
-    //     const sprite = makeTextSprite({message: `(${x.toFixed(1)}, ${z.toFixed(1)})`, // show world coords
-    //     });
-
-    //     sprite.position.set(x, y, z);
-    //     this.add(sprite);
-    //   }
-    // }
-
     this.worldBounds = {
       minX: .5,
       maxX: numCols - 1.5,
       minZ: .5,
       maxZ: numRows - 1.5
     }
-    // Visualize world bounds
-    // const width = this.worldBounds.maxX - this.worldBounds.minX;
-    // const depth = this.worldBounds.maxZ - this.worldBounds.minZ;
-    // const height = 1; // for wireframe box height
-
-    // const geometry = new THREE.BoxGeometry(width, height, depth);
-    // const material = new THREE.MeshBasicMaterial({
-    //   color: 0x00ff00,
-    //   wireframe: true,
-    //   opacity: 0.5,
-    //   transparent: true
-    // });
-
-    // const boundsBox = new THREE.Mesh(geometry, material);
-    // boundsBox.position.set(
-    //   (this.worldBounds.minX + this.worldBounds.maxX) / 2,
-    //   height / 2,
-    //   (this.worldBounds.minZ + this.worldBounds.maxZ) / 2
-    // );
-
-    // this.add(boundsBox);
-
+   
     this.clock = new THREE.Clock();
+    this.score = new ScoreLabel();
+    this.score.show();
 
     // Init state
     this.state = {
@@ -114,31 +63,7 @@ class GameScene extends Scene {
     this.obstacles = [
       { minX: 2.5, maxX: 4.5, minZ: 2.5, maxZ: 3.5}, // hardcode stove bounds
     ];
-    //visualize
-    // Assuming you have a reference to your scene
-    // this.obstacles.forEach((obs) => {
-    //   const width = obs.maxX - obs.minX;
-    //   const depth = obs.maxZ - obs.minZ;
-    //   const height = 2; // arbitrary height for visualization
 
-    //   const geometry = new THREE.BoxGeometry(width, height, depth);
-    //   const material = new THREE.MeshBasicMaterial({
-    //     color: 0xff0000,
-    //     wireframe: true,
-    //   });
-    //   const box = new THREE.Mesh(geometry, material);
-
-    //   // Position box at the center of the obstacle
-    //   box.position.set(
-    //     (obs.minX + obs.maxX) / 2,
-    //     height / 2, // lift so it's above floor
-    //     (obs.minZ + obs.maxZ) / 2
-    //   );
-
-      // this.add(box); // add to scene or parent group
-    // });
-    // Set background to a nice color
-    // this.background = new Color(0x7ec0ee);
     const loader = new TextureLoader();
     const wallColor = 0xAB6D41;
     const floorColor = 0xFFDB82;
@@ -161,7 +86,6 @@ class GameScene extends Scene {
     
     this.add(skybox);
     
-
     // Add meshes to scene
     this.player = new ToonCat(this, 2, 1);
     const lights = new BasicLights();
@@ -196,8 +120,11 @@ class GameScene extends Scene {
       [" ", " ", " ", " ", " ", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " "],
     ];
+    // hardcode plate generator table
     this.plateSpawnRow = 1;
     this.plateSpawnCol = 7;
+    this.state.furnitureGrid[this.plateSpawnRow][this.plateSpawnCol].name = PLATEGENERATOR;
+    
     this.populateItemGrid(initialItems);
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
